@@ -79,7 +79,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.gasMaxBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 60. * CV.KPH_TO_MS, 80. * CV.KPH_TO_MS,
                     100. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
-    ret.gasMaxV = [0.45, 0.37, 0.25, 0.22, 0.18, 0.135, 0.07, 0.055]
+    ret.gasMaxV = [0.45, 0.38, 0.26, 0.23, 0.165, 0.135, 0.07, 0.055]
 
     ret.brakeMaxBP = [0, 5. * CV.KPH_TO_MS, 10. * CV.KPH_TO_MS, 25. * CV.KPH_TO_MS, 50. * CV.KPH_TO_MS, 70. * CV.KPH_TO_MS,
                       100. * CV.KPH_TO_MS]
