@@ -228,6 +228,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"UseClusterSpeed", PERSISTENT},
     {"LongControlEnabled", PERSISTENT},
     {"MadModeEnabled", PERSISTENT},
+
     {"IsLdwsCar", PERSISTENT},
     {"LaneChangeEnabled", PERSISTENT},
     {"AutoLaneChangeEnabled", PERSISTENT},
@@ -235,7 +236,8 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"SccSmootherState", PERSISTENT},
     {"SccSmootherSlowOnCurves", PERSISTENT},
     {"SccSmootherSyncGasPressed", PERSISTENT},
-    {"FuseWithStockScc", PERSISTENT},
+    {"StockNaviDecelEnabled", PERSISTENT},
+    {"FuseWithStockScc", PERSISTENT},    
     {"ShowDebugUI", PERSISTENT},
     {"CustomLeadMark", PERSISTENT},
 };
