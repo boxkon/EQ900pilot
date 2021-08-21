@@ -270,8 +270,8 @@ static void screen_draw_button(UIState *s, int touch_x, int touch_y) {
     //  draw_lock_button(s);
     //}
 
-    int btn_w = 180;
-    int btn_h = 180;
+    int btn_w = 160;
+    int btn_h = 160;
     int btn_x = s->fb_w - btn_w - (bdr_s);
     int btn_y = s->fb_h - btn_h - 45;
     nvgBeginPath(s->vg);
