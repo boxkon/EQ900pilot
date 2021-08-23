@@ -481,8 +481,8 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
 
 static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w ) {
   const UIScene *scene = &s->scene;
-  const int x = 25;
-  const int y = -30;
+  const int x = 20;
+  const int y = -20;
   int bb_rx = bb_x + (int)(bb_w/2) + x;
   int bb_ry = bb_y + y;
   int bb_h = 5;
