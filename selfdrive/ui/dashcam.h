@@ -270,10 +270,10 @@ static void screen_draw_button(UIState *s, int touch_x, int touch_y) {
     //  draw_lock_button(s);
     //}
 
-    int btn_w = 160;
-    int btn_h = 160;
-    int btn_x = s->fb_w - btn_w - (bdr_s * 2);
-    int btn_y = s->fb_h - btn_h - 30;
+    int btn_w = 170;
+    int btn_h = 170;
+    int btn_x = s->fb_w - btn_w - bdr_s;
+    int btn_y = s->fb_h - btn_h - 45;
     nvgBeginPath(s->vg);
     nvgRoundedRect(s->vg, btn_x, btn_y, btn_w, btn_h, 100);
     nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));

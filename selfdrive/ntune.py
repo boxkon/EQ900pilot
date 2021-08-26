@@ -31,8 +31,8 @@ class nTune():
       self.lqr.A = np.array([0., 1., -0.22619643, 1.21822268]).reshape((2, 2))
       self.lqr.B = np.array([-1.92006585e-04, 3.95603032e-05]).reshape((2, 1))
       self.lqr.C = np.array([1., 0.]).reshape((1, 2))
-      self.lqr.K = np.array([-110., 451.]).reshape((1, 2))
-      self.lqr.L = np.array([0.33, 0.318]).reshape((2, 1))
+      self.lqr.K = np.array([-110.73572306, 451.22718255]).reshape((1, 2))
+      self.lqr.L = np.array([0.3233671, 0.31857578]).reshape((2, 1))
     else:
       self.file = CONF_PATH + group + ".json"
 
@@ -146,7 +146,7 @@ class nTune():
   def checkValidLQR(self):
     updated = False
 
-    if self.checkValue("scale", 500.0, 5000.0, 1800.0):
+    if self.checkValue("scale", 500.0, 5000.0, 1700.0):
       updated = True
 
     if self.checkValue("ki", 0.0, 0.2, 0.01):

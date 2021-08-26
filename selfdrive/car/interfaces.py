@@ -103,10 +103,10 @@ class CarInterfaceBase():
   def create_common_events(self, cs_out, extra_gears=None, gas_resume_speed=-1, pcm_enable=True):
     events = Events()
 
-    if cs_out.doorOpen:
-      events.add(EventName.doorOpen)
-    if cs_out.seatbeltUnlatched:
-      events.add(EventName.seatbeltNotLatched)
+    # if cs_out.doorOpen:
+    #   events.add(EventName.doorOpen)
+    # if cs_out.seatbeltUnlatched:
+    #   events.add(EventName.seatbeltNotLatched)
     if cs_out.gearShifter != GearShifter.drive and (extra_gears is None or
        cs_out.gearShifter not in extra_gears):
       events.add(EventName.wrongGear)
@@ -154,6 +154,11 @@ class CarInterfaceBase():
         events.add(EventName.pcmEnable)
       elif not cs_out.cruiseState.enabled:
         events.add(EventName.pcmDisable)
+
+    # 자동인게이지 장푸 버젼 engage when vEgo above 9.375(15kmh)
+    if cs_out.cruiseState.enabled:
+      if cs_out.gearShifter == GearShifter.drive and cs_out.vEgo > 5. * CV.KPH_TO_MS:
+        events.add(EventName.pcmEnable)
 
     return events
 

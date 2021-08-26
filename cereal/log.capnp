@@ -584,6 +584,10 @@ struct ControlsState @0x97ff69c53601abf1 {
   sccStockCamAct @72 :Float32;
   sccStockCamStatus @73 :Float32;
 
+  # stock scc fusion
+  fusedAccel @74 :Float32;
+  leadDist @75 :Float32;
+
 
   enum OpenpilotState @0xdbe58b96d2d1ac61 {
     disabled @0;

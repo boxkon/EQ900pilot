@@ -46,6 +46,10 @@ class CarState(CarStateBase):
     self.standstill = False
     self.cruiseState_enabled = False
     self.cruiseState_speed = 0
+    
+    # Auto-resume Cruise Set Speed by JangPoo
+    self.prev_cruiseState_speed = 0 
+    self.obj_valid = 0    
 
     self.use_cluster_speed = Params().get_bool('UseClusterSpeed')
     self.long_control_enabled = Params().get_bool('LongControlEnabled')
@@ -106,7 +110,7 @@ class CarState(CarStateBase):
     ret.steerWarning = self.mdps_error_cnt > 100
 
     if self.CP.enableAutoHold:
-      ret.autoHold = cp.vl["ESP11"]['AVH_STAT']
+      ret.autoHold = cp.vl["ESP11"]['AVH_STAT'] # by neokii for AutoHold
 
     # cruise state
     ret.cruiseState.enabled = (cp_scc.vl["SCC12"]['ACCMode'] != 0) if not self.no_radar else \
@@ -143,6 +147,13 @@ class CarState(CarStateBase):
     if self.CP.hasEms:
       ret.gas = cp.vl["EMS12"]['PV_AV_CAN'] / 100.
       ret.gasPressed = bool(cp.vl["EMS16"]["CF_Ems_AclAct"])
+
+    if not self.car_fingerprint in FEATURES["use_elect_gears"]:
+    #if self.car_fingerprint in [CAR.GENESIS, CAR.GENESIS_EQ900, CAR.GENESIS_EQ900_L, CAR.K7]: # 현재 기어 단수를 표시하기 위한 작업
+      ret.currentGear = cp.vl["LVR11"]["CF_Lvr_CGear"]
+
+    gear_disp2 = cp.vl["LVR11"] #["CF_Lvr_CGear"] # LVR11 등의 CAN ID를 기반으로한 데이터는 다음과 같게도 표시가능하다..
+    print(gear_disp2)
 
     # TODO: refactor gear parsing in function
     # Gear Selection via Cluster - For those Kia/Hyundai which are not fully discovered, we can use the Cluster Indicator for Gear Selection,
@@ -195,6 +206,23 @@ class CarState(CarStateBase):
                     CAR.SONATA_HEV, CAR.SONATA21_HEV, CAR.SANTA_FE, CAR.KONA_EV, CAR.NIRO_EV, CAR.KONA]:
       self.lkas_button_on = bool(cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"])
 
+    #TPMS
+    if cp.vl["TPMS11"]['PRESSURE_FL'] > 43:
+      ret.tpmsPressureFl = cp.vl["TPMS11"]['PRESSURE_FL'] * 5 * 0.145
+    else:
+      ret.tpmsPressureFl = cp.vl["TPMS11"]['PRESSURE_FL']
+    if cp.vl["TPMS11"]['PRESSURE_FR'] > 43:
+      ret.tpmsPressureFr = cp.vl["TPMS11"]['PRESSURE_FR'] * 5 * 0.145
+    else:
+      ret.tpmsPressureFr = cp.vl["TPMS11"]['PRESSURE_FR']
+    if cp.vl["TPMS11"]['PRESSURE_RL'] > 43:
+      ret.tpmsPressureRl = cp.vl["TPMS11"]['PRESSURE_RL'] * 5 * 0.145
+    else:
+      ret.tpmsPressureRl = cp.vl["TPMS11"]['PRESSURE_RL']
+    if cp.vl["TPMS11"]['PRESSURE_RR'] > 43:
+      ret.tpmsPressureRr = cp.vl["TPMS11"]['PRESSURE_RR'] * 5 * 0.145
+    else:
+      ret.tpmsPressureRr = cp.vl["TPMS11"]['PRESSURE_RR']
 
     # scc smoother
     driver_override = cp.vl["TCS13"]["DriverOverride"]
@@ -206,6 +234,13 @@ class CarState(CarStateBase):
     self.cruiseState_enabled = ret.cruiseState.enabled
     self.cruiseState_speed = ret.cruiseState.speed
     ret.cruiseGap = self.cruise_gap
+
+    # Auto-resume Cruise Set Speed by JangPoo
+    self.prev_cruiseState_speed = self.cruiseState_speed if self.cruiseState_speed else self.prev_cruiseState_speed
+    self.obj_valid = cp_scc.vl["SCC11"]['ObjValid']
+
+    if self.prev_cruise_buttons == 4: #cancle
+      self.prev_cruiseState_speed = 0 # 여기까지....
 
     return ret
 
@@ -219,6 +254,11 @@ class CarState(CarStateBase):
       ("WHL_SPD_RL", "WHL_SPD11", 0),
       ("WHL_SPD_RR", "WHL_SPD11", 0),
 
+      ("PRESSURE_FL", "TPMS11", 0),         # tpms
+      ("PRESSURE_FR", "TPMS11", 0),
+      ("PRESSURE_RL", "TPMS11", 0),
+      ("PRESSURE_RR", "TPMS11", 0),
+
       ("YAW_RATE", "ESP12", 0),
 
       ("CF_Gway_DrvSeatBeltInd", "CGW4", 1),
@@ -230,6 +270,8 @@ class CarState(CarStateBase):
       ("CF_Gway_RRDrSw", "CGW2", 0),        # Rear right door
       ("CF_Gway_TurnSigLh", "CGW1", 0),
       ("CF_Gway_TurnSigRh", "CGW1", 0),
+      ("CF_Gway_TSigLHSw", "CGW1", 0),      # blinker
+      ("CF_Gway_TSigRHSw", "CGW1", 0),      # blinker
       ("CF_Gway_ParkBrakeSw", "CGW1", 0),   # Parking Brake
 
       ("CYL_PRES", "ESP12", 0),
@@ -255,7 +297,18 @@ class CarState(CarStateBase):
 
       ("ESC_Off_Step", "TCS15", 0),
 
-      #("CF_Lvr_GearInf", "LVR11", 0),        # Transmission Gear (0 = N or P, 1-8 = Fwd, 14 = Rev)
+      ("Lvr12_00", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_01", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_02", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_03", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_04", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_05", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_06", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_07", "LVR12", 0),     # 테네시 추가
+
+      ("CF_Lvr_CGear", "LVR11", 0), # 테네시 추가
+      ("CF_Lvr_GearInf", "LVR11", 0),  # Transmission Gear (0 = N or P, 1-8 = Fwd, 14 = Rev)
+
 
       ("MainMode_ACC", "SCC11", 1),
       ("SCCInfoDisplay", "SCC11", 0),

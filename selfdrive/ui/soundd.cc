@@ -28,7 +28,8 @@ public:
       {AudibleAlert::CHIME_WARNING_REPEAT, sound_asset_path + "warning_repeat.wav", true},
       {AudibleAlert::CHIME_ERROR, sound_asset_path + "error.wav", false},
       {AudibleAlert::CHIME_PROMPT, sound_asset_path + "error.wav", false},
-      {AudibleAlert::CHIME_SLOWING_DOWN_SPEED, "../assets/sounds/slowing_down_speed.wav", false}
+      {AudibleAlert::CHIME_SLOWING_DOWN_SPEED, "../assets/sounds/slowing_down_speed.wav", false},
+      {AudibleAlert::CHIME_DING, "../assets/sounds/ding.wav", false}      
     };
     for (auto &[alert, fn, loops] : sound_list) {
       QSoundEffect *s = new QSoundEffect(this);

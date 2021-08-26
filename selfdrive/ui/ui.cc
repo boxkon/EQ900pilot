@@ -144,11 +144,13 @@ static void update_state(UIState *s) {
     scene.engageable = sm["controlsState"].getControlsState().getEngageable();
     scene.dm_active = sm["driverMonitoringState"].getDriverMonitoringState().getIsActiveMode();
   }
+
   if (sm.updated("modelV2") && s->vg) {
     auto model = sm["modelV2"].getModelV2();
     update_model(s, model);
     update_leads(s, model);
   }
+
   if (sm.updated("liveCalibration")) {
     scene.world_objects_visible = true;
     auto rpy_list = sm["liveCalibration"].getLiveCalibration().getRpyCalib();
@@ -166,6 +168,7 @@ static void update_state(UIState *s) {
       }
     }
   }
+
   if (sm.updated("pandaState")) {
     auto pandaState = sm["pandaState"].getPandaState();
     scene.pandaType = pandaState.getPandaType();
@@ -173,10 +176,33 @@ static void update_state(UIState *s) {
   } else if ((s->sm->frame - s->sm->rcv_frame("pandaState")) > 5*UI_FREQ) {
     scene.pandaType = cereal::PandaState::PandaType::UNKNOWN;
   }
+
   if (sm.updated("carParams")) {
     scene.car_params = sm["carParams"].getCarParams();
     scene.longitudinal_control = sm["carParams"].getCarParams().getOpenpilotLongitudinalControl();
   }
+
+  if (sm.updated("carState")) {
+    auto data = sm["carState"].getCarState();
+    auto car_state = (*s->sm)["carState"].getCarState();
+    scene.brakePress = data.getBrakePressed();
+    scene.brakeLights = data.getBrakeLights();
+    scene.currentGear = data.getCurrentGear();
+    scene.getGearShifter = data.getGearShifter();
+    scene.tpmsPressureFl = data.getTpmsPressureFl();
+    scene.tpmsPressureFr = data.getTpmsPressureFr();
+    scene.tpmsPressureRl = data.getTpmsPressureRl();
+    scene.tpmsPressureRr = data.getTpmsPressureRr();
+    //blinker
+    if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker())
+      scene.blinker_blinkingrate = 120;
+    scene.leftBlinker = data.getLeftBlinker();
+    scene.rightBlinker = data.getRightBlinker();
+	  //BSD
+    scene.leftblindspot = data.getLeftBlindspot();
+    scene.rightblindspot = data.getRightBlindspot();
+  }
+  
   if (sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
       if (!scene.started && sensor.which() == cereal::SensorEventData::ACCELERATION) {
@@ -192,6 +218,7 @@ static void update_state(UIState *s) {
       }
     }
   }
+
   if (sm.updated("roadCameraState")) {
     auto camera_state = sm["roadCameraState"].getRoadCameraState();
 

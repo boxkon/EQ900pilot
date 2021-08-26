@@ -156,7 +156,7 @@ class SoftDisableAlert(Alert):
     super().__init__("TAKE CONTROL IMMEDIATELY", alert_text_2,
                      AlertStatus.userPrompt, AlertSize.full,
                      Priority.MID, VisualAlert.steerRequired,
-                     AudibleAlert.chimeError, .1, 2., 2.),
+                     AudibleAlert.chimeDing, .1, 2., 2.),
 
 
 class ImmediateDisableAlert(Alert):
@@ -270,7 +270,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "Be ready to take over at any time",
       "Always keep hands on wheel and eyes on road",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 5., 0.,3.),
   },
 
   EventName.startupMaster: {
@@ -278,7 +278,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "WARNING: This branch is not tested",
       "Always keep hands on wheel and eyes on road",
       AlertStatus.userPrompt, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 5.),
   },
 
   # Car is recognized, but marked as dashcam only
@@ -287,7 +287,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "Dashcam mode",
       "Always keep hands on wheel and eyes on road",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.chimeDing, .2, 0., 5.),
   },
 
   # Car is not recognized
@@ -296,7 +296,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "Dashcam mode for unsupported car",
       "Always keep hands on wheel and eyes on road",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.chimeDing, .2, 0., 5.),
   },
 
   # openpilot uses the version strings from various ECUs to detect the correct car model.
@@ -355,7 +355,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "Dashcam Mode",
       "Car Unrecognized",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWEST, VisualAlert.none, AudibleAlert.chimeDing, .2, 0., .2),
   },
 
   EventName.stockAeb: {
@@ -816,10 +816,10 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
 
   EventName.reverseGear: {
     ET.PERMANENT: Alert(
-      "Reverse\nGear",
+      "Reverse Gear\nMonitor Behind",
       "",
       AlertStatus.normal, AlertSize.full,
-      Priority.LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2, creation_delay=0.5),
+      Priority.LOWEST, VisualAlert.none, AudibleAlert.chimeDing, 1., 0., .2, creation_delay=0.5),
     ET.SOFT_DISABLE: SoftDisableAlert("Reverse Gear"),
     ET.NO_ENTRY: NoEntryAlert("Reverse Gear"),
   },
@@ -893,7 +893,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "TAKE CONTROL",
       "Steer Unavailable while Turning",
       AlertStatus.userPrompt, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .0, .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, .0, .0, .2),
   },
 
   EventName.autoLaneChange: {

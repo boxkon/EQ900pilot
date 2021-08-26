@@ -13,7 +13,7 @@ from common.realtime import sec_since_boot
 from selfdrive.config import Conversions as CV
 
 
-CAMERA_SPEED_FACTOR = 1.05
+CAMERA_SPEED_FACTOR = 1.0
 
 class Port:
   BROADCAST_PORT = 2899

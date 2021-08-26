@@ -44,7 +44,7 @@ class CarInterface(CarInterfaceBase):
       if fw.ecu == "eps" and b"," in fw.fwVersion:
         eps_modified = True
 
-    ret.maxSteeringAngleDeg = 90.
+    ret.maxSteeringAngleDeg = 150.
 
     # lateral
     ret.lateralTuning.init('lqr')
@@ -56,8 +56,8 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
     ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
     ret.lateralTuning.lqr.c = [1., 0.]
-    ret.lateralTuning.lqr.k = [-110., 451.]
-    ret.lateralTuning.lqr.l = [0.33, 0.318]
+    ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
+    ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
 
     ret.steerRatio = 16.5
     ret.steerActuatorDelay = 0.1
@@ -67,22 +67,25 @@ class CarInterface(CarInterfaceBase):
     ret.steerMaxV = [1.5]
 
     # longitudinal
-    ret.longitudinalTuning.kpBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 40.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 100.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
-    ret.longitudinalTuning.kpV = [1.2, 0.97, 0.82, 0.735, 0.63, 0.54, 0.46]
-    ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kiV = [0.05, 0.03]
-    ret.longitudinalTuning.kfBP = [0.]
-    ret.longitudinalTuning.kfV = [1.0]
-    ret.longitudinalTuning.deadzoneBP = [0., 100.*CV.KPH_TO_MS]
+    ret.longitudinalTuning.kpBP = [0, 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 70. * CV.KPH_TO_MS,
+                                   100. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kpV = [1.2, 1., 0.7, 0.6, 0.4, 0.3, 0.2]
+    ret.longitudinalTuning.kiBP = [0., 30. * CV.KPH_TO_MS, 60. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kiV = [0.0135, 0.0145, 0.015, 0.016]
+    ret.longitudinalTuning.kfBP = [0., 50. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kfV = [0.95, 0.85, 0.75]
+    ret.longitudinalTuning.deadzoneBP = [0., 100. * CV.KPH_TO_MS]
     ret.longitudinalTuning.deadzoneV = [0., 0.015]
 
-    ret.gasMaxBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 50.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
-    ret.gasMaxV = [0.57, 0.4, 0.32, 0.24, 0.17, 0.13]
+    ret.gasMaxBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 60. * CV.KPH_TO_MS, 80. * CV.KPH_TO_MS,
+                    100. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
+    ret.gasMaxV = [0.45, 0.38, 0.26, 0.23, 0.15, 0.13, 0.08, 0.05]
 
-    ret.brakeMaxBP = [0, 70.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
-    ret.brakeMaxV = [1.5, 1.0, 0.7]
+    ret.brakeMaxBP = [0, 5. * CV.KPH_TO_MS, 10. * CV.KPH_TO_MS, 25. * CV.KPH_TO_MS, 50. * CV.KPH_TO_MS, 70. * CV.KPH_TO_MS,
+                      100. * CV.KPH_TO_MS]
+    ret.brakeMaxV = [0.65, 0.5, 0.63, 0.75, 1.5, 1., 0.6]
 
-    ret.stoppingBrakeRate = 0.15  # brake_travel/s while trying to stop
+    ret.stoppingBrakeRate = 0.2  # brake_travel/s while trying to stop
     ret.startingBrakeRate = 1.0  # brake_travel/s while releasing on restart
     ret.startAccel = 1.5
 
@@ -100,8 +103,8 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 3.01
       ret.centerToFront = ret.wheelbase * 0.4
     elif candidate == CAR.GENESIS_EQ900:
-      ret.mass = 2200
-      ret.wheelbase = 3.15
+      ret.mass = 2120
+      ret.wheelbase = 3.16
       ret.centerToFront = ret.wheelbase * 0.4
     elif candidate == CAR.GENESIS_EQ900_L:
       ret.mass = 2290
@@ -280,6 +283,7 @@ class CarInterface(CarInterfaceBase):
       ret.hasScc13 = 1290 in fingerprint[ret.sccBus]
       ret.hasScc14 = 905 in fingerprint[ret.sccBus]
 
+    ret.hasHda = 1157 in fingerprint[0] or candidate in FEATURES['has_hda']
     ret.hasEms = 608 in fingerprint[0] and 809 in fingerprint[0]
 
     print('fingerprint', fingerprint)
