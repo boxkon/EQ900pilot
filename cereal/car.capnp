@@ -490,8 +490,7 @@ struct CarParams {
   hasEms @65 :Bool;
 
   # HDA
-  hasHda @65 : Bool;
-  hdaAvailable @66 : Bool;
+  hasHda @66 : Bool;
 
   struct LateralParams {
     torqueBP @0 :List(Int32);

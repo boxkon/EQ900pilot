@@ -636,9 +636,7 @@ FEATURES = {
                    CAR.K9, CAR.GENESIS_G90, CAR.NIRO21_HEV},
   
   # HDA
-  "send_hda_mfa": {CAR.GENESIS_EQ900, CAR.GENESIS_EQ900_L, CAR.GRANDEUR_IG},
   "has_hda": {CAR.GENESIS_EQ900, CAR.GENESIS_EQ900_L, CAR.GRANDEUR_IG},
-
   "send_hda_state_2": {CAR.GENESIS_G80, CAR.GENESIS_EQ900, CAR.GENESIS_EQ900_L},
 
   # these cars use the FCA11 message for the AEB and FCW signals, all others use SCC12
