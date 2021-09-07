@@ -2,8 +2,9 @@
 import numpy as np
 
 from cereal import car
+from common.numpy_fast import interp
 from selfdrive.config import Conversions as CV
-from selfdrive.car.hyundai.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS, Buttons, FEATURES
+from selfdrive.car.hyundai.values import CAR, Buttons
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
 from selfdrive.controls.lib.lateral_planner import LANE_CHANGE_SPEED_MIN
@@ -20,8 +21,17 @@ class CarInterface(CarInterfaceBase):
     self.mad_mode_enabled = Params().get_bool('MadModeEnabled')
 
   @staticmethod
-  def compute_gb(accel, speed):
-    return float(accel) / 3.0
+  def get_pid_accel_limits(CP, current_speed, cruise_speed):
+
+    v_current_kph = current_speed * CV.MS_TO_KPH
+
+    gas_max_bp = [0., 10., 20., 40., 60., 80, 100., 130.]
+    gas_max_v = [1.3, 1.2, 1., 0.8, 0.45, 0.3, 0.2, 0.1]
+
+    brake_max_bp = [0, 5., 10., 25., 50., 70., 130.]
+    brake_max_v = [-1.5, -2., -2.8, -3.3, -5., -4., -2]
+
+    return interp(v_current_kph, brake_max_bp, brake_max_v), interp(v_current_kph, gas_max_bp, gas_max_v)
 
   @staticmethod
   def get_params(candidate, fingerprint=gen_empty_fingerprint(), car_fw=[]):  # pylint: disable=dangerous-default-value
@@ -49,9 +59,9 @@ class CarInterface(CarInterfaceBase):
     # lateral
     ret.lateralTuning.init('lqr')
 
-    ret.lateralTuning.lqr.scale = 1700.
+    ret.lateralTuning.lqr.scale = 1650.
     ret.lateralTuning.lqr.ki = 0.01
-    ret.lateralTuning.lqr.dcGain = 0.0028
+    ret.lateralTuning.lqr.dcGain = 0.0027
 
     ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
     ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
@@ -60,34 +70,24 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
 
     ret.steerRatio = 16.5
-    ret.steerActuatorDelay = 0.1
+    ret.steerActuatorDelay = 0.0
     ret.steerLimitTimer = 2.5
-    ret.steerRateCost = 0.4
+    ret.steerRateCost = 0.5
     ret.steerMaxBP = [0.]
-    ret.steerMaxV = [1.5]
+    ret.steerMaxV = [2.25]
 
     # longitudinal
     ret.longitudinalTuning.kpBP = [0, 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 70. * CV.KPH_TO_MS,
                                    100. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
     ret.longitudinalTuning.kpV = [1.2, 1., 0.7, 0.6, 0.4, 0.3, 0.2]
     ret.longitudinalTuning.kiBP = [0., 30. * CV.KPH_TO_MS, 60. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kiV = [0.0135, 0.0145, 0.015, 0.016]
-    ret.longitudinalTuning.kfBP = [0., 50. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kfV = [0.95, 0.85, 0.75]
+    ret.longitudinalTuning.kiV = [0.0135, 0.015, 0.018, 0.016]
     ret.longitudinalTuning.deadzoneBP = [0., 100. * CV.KPH_TO_MS]
     ret.longitudinalTuning.deadzoneV = [0., 0.015]
+    ret.longitudinalActuatorDelay = 0.2
 
-    ret.gasMaxBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 60. * CV.KPH_TO_MS, 80. * CV.KPH_TO_MS,
-                    100. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
-    ret.gasMaxV = [0.45, 0.38, 0.26, 0.23, 0.15, 0.13, 0.08, 0.05]
-
-    ret.brakeMaxBP = [0, 5. * CV.KPH_TO_MS, 10. * CV.KPH_TO_MS, 25. * CV.KPH_TO_MS, 50. * CV.KPH_TO_MS, 70. * CV.KPH_TO_MS,
-                      100. * CV.KPH_TO_MS]
-    ret.brakeMaxV = [0.65, 0.5, 0.63, 0.75, 1.5, 1., 0.6]
-
-    ret.stoppingBrakeRate = 0.2  # brake_travel/s while trying to stop
-    ret.startingBrakeRate = 1.0  # brake_travel/s while releasing on restart
-    ret.startAccel = 1.5
+    ret.stoppingDecelRate = 0.6  # m/s^2/s while trying to stop
+    ret.startingAccelRate = 3.2  # m/s^2/s while trying to start
 
     # genesis
     if candidate == CAR.GENESIS:
