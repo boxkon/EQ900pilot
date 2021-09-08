@@ -667,7 +667,7 @@ static void bb_ui_draw_basic_info(UIState *s)
     int scc_bus = scene->car_params.getSccBus();
     bool has_hda = scene->car_params.getHasHda();
 
-    snprintf(str, sizeof(str), "AO(%.2f/%.2f) SR(%.2f) SRC(%.2f) SAD(%.2f) BUS(MDPS:%d SCC:%d) HDA(%d) SCC(%.2f/%.2f/%.2f)%s%s",
+    snprintf(str, sizeof(str), "AO(%.2f/%.2f) SR(%.2f) SRC(%.2f) SAD(%.2f) BUS(MDPS:%d SCC:%d) HDA(%d) LAD(%.2f) SCC(%.2f/%.2f/%.2f)%s%s",
 
                         live_params.getAngleOffsetDeg(),
                         live_params.getAngleOffsetAverageDeg(),
@@ -676,6 +676,7 @@ static void bb_ui_draw_basic_info(UIState *s)
                         controls_state.getSteerActuatorDelay(),
 
                         mdps_bus, scc_bus, has_hda,
+                        controls_state.getLongitudinalActuatorDelay(),
                         controls_state.getSccGasFactor(),
                         controls_state.getSccBrakeFactor(),
                         controls_state.getSccCurvatureFactor(),
