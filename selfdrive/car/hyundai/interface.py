@@ -81,13 +81,13 @@ class CarInterface(CarInterfaceBase):
                                    100. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
     ret.longitudinalTuning.kpV = [1.2, 1., 0.7, 0.6, 0.4, 0.3, 0.2]
     ret.longitudinalTuning.kiBP = [0., 30. * CV.KPH_TO_MS, 60. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kiV = [0.0135, 0.015, 0.018, 0.016]
+    ret.longitudinalTuning.kiV = [0.013, 0.0138, 0.0145, 0.013]
     ret.longitudinalTuning.deadzoneBP = [0., 100. * CV.KPH_TO_MS]
     ret.longitudinalTuning.deadzoneV = [0., 0.015]
     ret.longitudinalActuatorDelay = 0.2
 
-    ret.stoppingDecelRate = 0.6  # m/s^2/s while trying to stop
-    ret.startingAccelRate = 3.2  # m/s^2/s while trying to start
+    ret.stoppingDecelRate = 0.5  # m/s^2/s while trying to stop
+    ret.startingAccelRate = 3.4  # m/s^2/s while trying to start
 
     # genesis
     if candidate == CAR.GENESIS:
