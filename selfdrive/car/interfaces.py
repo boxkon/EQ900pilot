@@ -159,6 +159,11 @@ class CarInterfaceBase():
       elif not cs_out.cruiseState.enabled:
         events.add(EventName.pcmDisable)
 
+    # Auto_engage by Jangpoo
+    if cs_out.cruiseState.enabled:
+      if cs_out.gearShifter == GearShifter.drive and cs_out.vEgo > 15. * CV.KPH_TO_MS:
+        events.add(EventName.pcmEnable)
+
     return events
 
 
