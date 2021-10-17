@@ -144,6 +144,10 @@ class CarState(CarStateBase):
       ret.gas = cp.vl["EMS12"]["PV_AV_CAN"] / 100.
       ret.gasPressed = bool(cp.vl["EMS16"]["CF_Ems_AclAct"])
 
+    if not self.car_fingerprint in FEATURES["use_elect_gears"]: # for display current state of gear
+      ret.currentGear = cp.vl["LVR11"]["CF_Lvr_CGear"]
+
+
     # TODO: refactor gear parsing in function
     # Gear Selection via Cluster - For those Kia/Hyundai which are not fully discovered, we can use the Cluster Indicator for Gear Selection,
     # as this seems to be standard over all cars, but is not the preferred method.
@@ -230,6 +234,8 @@ class CarState(CarStateBase):
       ("CF_Gway_RRDrSw", "CGW2", 0),        # Rear right door
       ("CF_Gway_TurnSigLh", "CGW1", 0),
       ("CF_Gway_TurnSigRh", "CGW1", 0),
+      ("CF_Gway_TSigLHSw", "CGW1", 0),      # blinker
+      ("CF_Gway_TSigRHSw", "CGW1", 0),      # blinker
       ("CF_Gway_ParkBrakeSw", "CGW1", 0),   # Parking Brake
 
       ("CYL_PRES", "ESP12", 0),
@@ -255,7 +261,18 @@ class CarState(CarStateBase):
 
       ("ESC_Off_Step", "TCS15", 0),
 
-      #("CF_Lvr_GearInf", "LVR11", 0),        # Transmission Gear (0 = N or P, 1-8 = Fwd, 14 = Rev)
+      ("Lvr12_00", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_01", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_02", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_03", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_04", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_05", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_06", "LVR12", 0),     # 테네시 추가
+      ("Lvr12_07", "LVR12", 0),     # 테네시 추가
+
+      ("CF_Lvr_CGear", "LVR11", 0), # 테네시 추가
+      ("CF_Lvr_GearInf", "LVR11", 0),  # Transmission Gear (0 = N or P, 1-8 = Fwd, 14 = Rev)
+
 
       ("MainMode_ACC", "SCC11", 1),
       ("SCCInfoDisplay", "SCC11", 0),

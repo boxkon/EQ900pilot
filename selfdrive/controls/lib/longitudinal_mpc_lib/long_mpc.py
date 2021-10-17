@@ -52,7 +52,7 @@ CRUISE_GAP_V = [1.3, 1.6, 1.9, 2.3]
 AUTO_TR_BP = [10.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
 AUTO_TR_V = [1.4, 1.6, 2.0]
 
-AUTO_TR_CRUISE_GAP = 1
+AUTO_TR_CRUISE_GAP = 4
 
 
 def get_stopped_equivalence_factor(v_lead, tr):

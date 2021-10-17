@@ -1,5 +1,30 @@
 #!/usr/bin/bash
 
+if [ ! -f "/data/openpilot/installer/boot_finish" ]; then
+  echo "Installing fonts..."
+  mount -o rw,remount /system
+
+  cp -f /data/openpilot/installer/spinner /data/openpilot/selfdrive/ui/qt/
+
+
+  chmod 700 /data/openpilot/selfdrive/ui/qt/spinner
+  touch /data/openpilot/installer/boot_finish
+
+
+elif [ "$(getprop persist.sys.locale)" != "ko-KR" ]; then
+
+  setprop persist.sys.locale ko-KR
+  setprop persist.sys.language ko
+  setprop persist.sys.country KR
+  setprop persist.sys.timezone Asia/Seoul
+
+  sleep 2
+  reboot
+else
+  chmod 644 /data/openpilot/installer/boot_finish
+  mount -o ro,remount /system
+fi
+
 if [ -z "$BASEDIR" ]; then
   BASEDIR="/data/openpilot"
 fi

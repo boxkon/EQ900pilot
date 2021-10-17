@@ -124,10 +124,16 @@ static void ui_draw_extras_tire_pressure(UIState *s)
 
     const int w = 58;
     const int h = 126;
-    int x = bdr_s + 80;
-    int y = s->fb_h - bdr_s - h - 60;
 
+    const int radius = 96;
+    const int x = ((radius / 2) + (bdr_s * 2)) * 3;
+    const int y = s->fb_h - bdr_s - h - 50;
     const int margin = 10;
+
+    const int rect_x = radius * 2 + 5;
+    const int rect_y = s->fb_h - bdr_s - h - 60;
+    const int rect_w = radius * 2;
+    const int rect_h = radius * 1.5;
 
     nvgBeginPath(s->vg);
     ui_draw_image(s, {x, y, w, h}, "tire_pressure", 0.8f);
@@ -150,6 +156,17 @@ static void ui_draw_extras_tire_pressure(UIState *s)
     nvgTextAlign(s->vg, NVG_ALIGN_LEFT);
     nvgFillColor(s->vg, get_tpms_color(rr));
     nvgText(s->vg, x+w+margin, y+h-15, get_tpms_text(rr).c_str(), NULL);
+
+    // drwa frame
+    NVGcolor color_bg = nvgRGBA(0, 0, 0, (255 * 0.15f));
+
+    nvgBeginPath(s->vg);
+    nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 20);
+    nvgFillColor(s->vg, color_bg);
+    nvgFill(s->vg);
+    nvgStrokeColor(s->vg, nvgRGBA(218, 111, 37, 255));
+    nvgStrokeWidth(s->vg, 3);
+    nvgStroke(s->vg);
 }
 
 static void ui_draw_extras(UIState *s)

@@ -49,7 +49,30 @@
 #define COLOR_WHITE_ALPHA(x) nvgRGBA(255, 255, 255, x)
 #define COLOR_RED_ALPHA(x) nvgRGBA(201, 34, 49, x)
 #define COLOR_YELLOW nvgRGBA(218, 202, 37, 255)
+#define COLOR_YELLOW_ALPHA(x) nvgRGBA(218, 202, 37, x)
 #define COLOR_RED nvgRGBA(201, 34, 49, 255)
+#define COLOR_RED_ALPHA(x) nvgRGBA(201, 34, 49, x)
+#define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
+#define COLOR_OCHRE_ALPHA(x) nvgRGBA(218, 111, 37, x)
+#define COLOR_GREEN nvgRGBA(0, 255, 0, 255)
+#define COLOR_GREEN_ALPHA(x) nvgRGBA(0, 255, 0, x)
+#define COLOR_BLUE nvgRGBA(0, 0, 255, 255)
+#define COLOR_BLUE_ALPHA(x) nvgRGBA(0, 0, 255, x)
+#define COLOR_ORANGE nvgRGBA(255, 175, 3, 255)
+#define COLOR_ORANGE_ALPHA(x) nvgRGBA(255, 175, 3, x)
+#define COLOR_LIME nvgRGBA(0, 255, 0, 255)
+#define COLOR_LIME_ALPHA(x) nvgRGBA(0, 255, 0, x)
+#define COLOR_GREY nvgRGBA(191, 191, 191, 1)
+#define COLOR_ENGAGED nvgRGBA(0, 170, 255, 255)
+#define COLOR_ENGAGED_ALPHA(x) nvgRGBA(0, 170, 255, x)
+//#define COLOR_WARNING nvgRGBA(218, 111, 37, 100)
+//#define COLOR_WARNING_ALPHA(x) nvgRGBA(218, 111, 37, x)
+#define COLOR_ENGAGEABLE nvgRGBA(23, 51, 73, 100)
+#define COLOR_ENGAGEABLE_ALPHA(x) nvgRGBA(23, 51, 73, x)
+#define COLOR_FORIP nvgRGBA(231, 255, 51, 255)
+#define COLOR_FORIP_ALPHA(x) nvgRGBA(231, 255, 51, x)
+#define COLOR_FORGEAR nvgRGBA(77, 178, 255, 255)
+#define COLOR_FORGEAR_ALPHA(x) nvgRGBA(77, 178, 255, x)
 
 typedef cereal::CarControl::HUDControl::AudibleAlert AudibleAlert;
 
@@ -103,9 +126,9 @@ typedef enum UIStatus {
 } UIStatus;
 
 const QColor bg_colors [] = {
-  [STATUS_DISENGAGED] =  QColor(0x17, 0x33, 0x49, 0xc8),
-  [STATUS_ENGAGED] = QColor(0x17, 0x86, 0x44, 0xf1),
-  [STATUS_WARNING] = QColor(0xDA, 0x6F, 0x25, 0xf1),
+  [STATUS_DISENGAGED] =  QColor(0x17, 0x33, 0x49, 0x64),
+  [STATUS_ENGAGED] = QColor(0x00, 0xAA, 0xFF, 0x64),
+  [STATUS_WARNING] = QColor(0xA3, 0xD9, 0xFF, 0x64),
   [STATUS_ALERT] = QColor(0xC9, 0x22, 0x31, 0xf1),
 };
 
@@ -124,6 +147,25 @@ typedef struct UIScene {
   bool world_objects_visible;
 
   cereal::PandaState::PandaType pandaType;
+
+  // Brake on SPD
+  bool brakePress;
+  bool brakeLights;
+
+  // Blinker
+  bool leftBlinker;
+  bool rightBlinker;
+  int blinker_blinkingrate;
+
+  // BSD
+  bool leftblindspot;
+  bool rightblindspot;
+  int blindspot_blinkingrate = 120;
+  int car_valid_status_changed = 0;
+  
+  // Tenesi
+  float currentGear;
+  cereal::CarState::GearShifter getGearShifter;
 
   // modelV2
   float lane_line_probs[4];
