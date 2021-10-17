@@ -134,6 +134,7 @@ class CarController():
 
     self.lkas11_cnt = (self.lkas11_cnt + 1) % 0x10
 
+    # Lane_blingking by Neokii & Tenesi
     if self.scc_smoother.active_cam:
       if frame % 50 == 0:
         self.lane_blink_on = not self.lane_blink_on
@@ -227,8 +228,9 @@ class CarController():
                                       CS.out.gasPressed, CS.out.brakePressed, CS.out.cruiseState.standstill,
                                       self.car_fingerprint))
 
+        activated_hda = road_speed_limiter_get_active()
         can_sends.append(create_scc11(self.packer, frame, enabled, set_speed, lead_visible, self.scc_live, CS.scc11,
-                                      self.scc_smoother.active_cam, stock_cam))
+                                      self.scc_smoother.active_cam, stock_cam, activated_hda))
 
         if frame % 20 == 0 and CS.has_scc13:
           can_sends.append(create_scc13(self.packer, CS.scc13))
