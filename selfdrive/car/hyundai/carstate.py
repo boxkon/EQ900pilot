@@ -5,6 +5,7 @@ from opendbc.can.parser import CANParser
 from opendbc.can.can_define import CANDefine
 from selfdrive.config import Conversions as CV
 from common.params import Params
+import copy
 
 GearShifter = car.CarState.GearShifter
 
@@ -36,6 +37,7 @@ class CarState(CarStateBase):
     self.cruise_unavail_cnt = 0
 
     self.apply_steer = 0.
+    self.lfahda = None
 
     # scc smoother
     self.acc_mode = False
@@ -211,6 +213,10 @@ class CarState(CarStateBase):
     ret.tpms.rl = tpms_unit * cp.vl["TPMS11"]["PRESSURE_RL"]
     ret.tpms.rr = tpms_unit * cp.vl["TPMS11"]["PRESSURE_RR"]
 
+    # for activate HDA
+    if self.CP.carFingerprint in FEATURES["send_hda_state_2"]:
+      self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
+	  
     return ret
 
   @staticmethod
@@ -613,6 +619,17 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
+
+    # for activate HDA
+    if CP.carFingerprint in FEATURES["send_hda_state_2"]:
+      signals += [
+        ("HDA_USM", "LFAHDA_MFC", 0),
+        #("HDA_Active", "LFAHDA_MFC", 0),
+        ("HDA_Icon_State", "LFAHDA_MFC", 0),
+        ("HDA_LdwSysState", "LFAHDA_MFC", 0),
+        ("HDA_Icon_Wheel", "LFAHDA_MFC", 0),
+      ]
+      checks += [("LFAHDA_MFC", 20)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)
 

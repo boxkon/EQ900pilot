@@ -134,10 +134,10 @@ class CarController():
 
     self.lkas11_cnt = (self.lkas11_cnt + 1) % 0x10
 
-    if self.scc_smoother.active_cam: # NDA가 카메라 인식후 차로를 깜빡이게 하기
+    if self.scc_smoother.active_cam:
       if frame % 50 == 0:
         self.lane_blink_on = not self.lane_blink_on
-      left_lane_warning = right_lane_warning = 1 # 1을 넣으면 핸들진동 기능과 함께 깜빡임이 된다.. 2는 차로 소리가 나온다.(계기판 동시) 3은 허드에서만 표시가 나온다..
+      left_lane_warning = right_lane_warning = 1
     else:
       self.lane_blink_on = False
 
@@ -257,6 +257,6 @@ class CarController():
         can_sends.append(create_lfahda_mfc(self.packer, enabled, activated_hda))
       elif CS.mdps_bus == 0:
         state = 2 if self.car_fingerprint in FEATURES["send_hda_state_2"] else 1
-        can_sends.append(create_hda_mfc(self.packer, activated_hda, state))
+        can_sends.append(create_hda_mfc(self.packer, activated_hda, state, CS, left_lane, right_lane))
 
     return can_sends
