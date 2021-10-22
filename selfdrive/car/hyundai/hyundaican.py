@@ -91,7 +91,7 @@ def create_lfahda_mfc(packer, enabled, active):
 
   return packer.make_can_msg("LFAHDA_MFC", 0, values)
 
-def create_hda_mfc(packer, active, state, CS, left_lane, right_lane):
+def create_hda_mfc(packer, active, state, CS, left_lane, right_lane, enabled):
   values = CS.lfahda
 
   ldwSysState = 0
@@ -105,6 +105,8 @@ def create_hda_mfc(packer, active, state, CS, left_lane, right_lane):
 
   values["HDA_USM"] = 2
   values["HDA_Icon_State"] = state if active > 1 else 0
+  values["HDA_VSetReq"] = enabled
+  values["HDA_Chime"] = 1 if active > 1 else 0
 
   return packer.make_can_msg("LFAHDA_MFC", 0, values)
 
