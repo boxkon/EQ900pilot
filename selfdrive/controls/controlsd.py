@@ -624,15 +624,8 @@ class Controls:
     CC.hudControl.lanesVisible = self.enabled
     CC.hudControl.leadVisible = self.sm['longitudinalPlan'].hasLead
 
-    right_lane_visible = self.sm['lateralPlan'].rProb > 0.5
-    left_lane_visible = self.sm['lateralPlan'].lProb > 0.5
-
-    if self.sm.frame % 100 == 0:
-      self.right_lane_visible = right_lane_visible
-      self.left_lane_visible = left_lane_visible
-
-    CC.hudControl.rightLaneVisible = self.right_lane_visible
-    CC.hudControl.leftLaneVisible = self.left_lane_visible
+    CC.hudControl.rightLaneVisible = True
+    CC.hudControl.leftLaneVisible = True
 
     recent_blinker = (self.sm.frame - self.last_blinker_frame) * DT_CTRL < 5.0  # 5s blinker cooldown
     ldw_allowed = self.is_ldw_enabled and CS.vEgo > LDW_MIN_SPEED and not recent_blinker \
@@ -640,6 +633,8 @@ class Controls:
 
     meta = self.sm['modelV2'].meta
     if len(meta.desirePrediction) and ldw_allowed:
+      right_lane_visible = self.sm['lateralPlan'].rProb > 0.5
+      left_lane_visible = self.sm['lateralPlan'].lProb > 0.5
       l_lane_change_prob = meta.desirePrediction[Desire.laneChangeLeft - 1]
       r_lane_change_prob = meta.desirePrediction[Desire.laneChangeRight - 1]
       cameraOffset = ntune_common_get("cameraOffset") + 0.08 if self.wide_camera else ntune_common_get("cameraOffset")

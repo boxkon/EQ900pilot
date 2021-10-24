@@ -243,31 +243,50 @@ static void update_status(UIState *s) {
 
 static void update_extras(UIState *s)
 {
-   UIScene &scene = s->scene;
-   SubMaster &sm = *(s->sm);
+  UIScene &scene = s->scene;
+  SubMaster &sm = *(s->sm);
 
-   if(sm.updated("carControl"))
+  if(sm.updated("carControl"))
     scene.car_control = sm["carControl"].getCarControl();
 
-   if(sm.updated("gpsLocationExternal"))
+  if(sm.updated("gpsLocationExternal"))
     scene.gps_ext = sm["gpsLocationExternal"].getGpsLocationExternal();
 
-   if(sm.updated("liveParameters"))
+  if(sm.updated("liveParameters"))
     scene.live_params = sm["liveParameters"].getLiveParameters();
 
-   if (sm.updated("ubloxGnss")) {
+  if (sm.updated("ubloxGnss")) {
     auto data = sm["ubloxGnss"].getUbloxGnss();
-    if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
+   if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
       scene.satelliteCount = data.getMeasurementReport().getNumMeas();
     }
-   }
+  }
 
-   if (sm.updated("radarState") && s->vg) {
-    std::optional<cereal::ModelDataV2::XYZTData::Reader> line;
-    if (sm.rcv_frame("modelV2") > 0) {
-      line = sm["modelV2"].getModelV2().getPosition();
-    }
-    update_leads_radar(s, sm["radarState"].getRadarState(), line);
+  if (sm.updated("carState")) {
+    auto data = sm["carState"].getCarState();
+    auto car_state = sm["carState"].getCarState();
+    scene.brakePress = data.getBrakePressed();
+    scene.brakeLights = data.getBrakeLights();
+    scene.currentGear = data.getCurrentGear();
+    scene.getGearShifter = data.getGearShifter();
+
+    // Blinker
+    if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker())
+      scene.blinker_blinkingrate = 120;
+    scene.leftBlinker = data.getLeftBlinker();
+    scene.rightBlinker = data.getRightBlinker();
+
+	  // BSD
+    scene.leftblindspot = data.getLeftBlindspot();
+    scene.rightblindspot = data.getRightBlindspot();
+  }
+
+  if (sm.updated("radarState") && s->vg) {
+   std::optional<cereal::ModelDataV2::XYZTData::Reader> line;
+   if (sm.rcv_frame("modelV2") > 0) {
+     line = sm["modelV2"].getModelV2().getPosition();
+   }
+   update_leads_radar(s, sm["radarState"].getRadarState(), line);
   }
 }
 
