@@ -68,6 +68,8 @@ class CarController():
     self.ldws_opt = Params().get_bool('IsLdwsCar')
     self.stock_navi_decel_enabled = Params().get_bool('StockNaviDecelEnabled')
 
+    self.lane_blink_on = False
+
     # gas_factor, brake_factor
     # Adjust it in the range of 0.7 to 1.3
     self.scc_smoother = SccSmoother()
@@ -132,6 +134,14 @@ class CarController():
     self.prev_scc_cnt = CS.scc11["AliveCounterACC"]
 
     self.lkas11_cnt = (self.lkas11_cnt + 1) % 0x10
+
+    # Lane_blingking by Neokii & Tenesi
+    if self.scc_smoother.active_cam:
+      if frame % 50 == 0:
+        self.lane_blink_on = not self.lane_blink_on
+      left_lane_warning = right_lane_warning = 1
+    else:
+      self.lane_blink_on = False
 
     can_sends = []
     can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
