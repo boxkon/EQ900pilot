@@ -624,10 +624,12 @@ class CarState(CarStateBase):
     if CP.carFingerprint in FEATURES["send_hda_state_2"]:
       signals += [
         ("HDA_USM", "LFAHDA_MFC", 0),
-        #("HDA_Active", "LFAHDA_MFC", 0),
+        ("HDA_Active", "LFAHDA_MFC", 0),
         ("HDA_Icon_State", "LFAHDA_MFC", 0),
         ("HDA_LdwSysState", "LFAHDA_MFC", 0),
         ("HDA_Icon_Wheel", "LFAHDA_MFC", 0),
+        ("HDA_Chime", "LFAHDA_MFC", 0),
+        ("HDA_VSetReq", "LFAHDA_MFC", 0),
       ]
       checks += [("LFAHDA_MFC", 20)]
 
