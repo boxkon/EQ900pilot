@@ -84,10 +84,10 @@ struct ModelDataRawPlanPrediction {
 };
 static_assert(sizeof(ModelDataRawPlanPrediction) == (sizeof(ModelDataRawPlanElement)*TRAJECTORY_SIZE*2) + sizeof(float));
 
-struct ModelDataRawPaths {
-  std::array<ModelDataRawPathPrediction, PATH_MHP_N> prediction;
+struct ModelDataRawPlans {
+  std::array<ModelDataRawPlanPrediction, PLAN_MHP_N> prediction;
 
-  constexpr const ModelDataRawPathPrediction &get_best_prediction() const {
+  constexpr const ModelDataRawPlanPrediction &get_best_prediction() const {
     int max_idx = 0;
     for (int i = 1; i < prediction.size(); i++) {
       if (prediction[i].prob > prediction[max_idx].prob) {
@@ -97,7 +97,7 @@ struct ModelDataRawPaths {
     return prediction[max_idx];
   }
 };
-static_assert(sizeof(ModelDataRawPaths) == sizeof(ModelDataRawPathPrediction)*PATH_MHP_N);
+static_assert(sizeof(ModelDataRawPlans) == sizeof(ModelDataRawPlanPrediction)*PLAN_MHP_N);
 
 struct ModelDataRawLinesXY {
   std::array<ModelDataRawYZ, TRAJECTORY_SIZE> left_far;

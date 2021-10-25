@@ -294,7 +294,7 @@ void fill_model(cereal::ModelDataV2::Builder &framed, const ModelDataRaw &net_ou
   plan_t[0] = 0.0;
   for (int xidx=1, tidx=0; xidx<TRAJECTORY_SIZE; xidx++) {
     // increment tidx until we find an element that's further away than the current xidx
-    for (int next_tid = tidx + 1; next_tid < TRAJECTORY_SIZE && best_path.mean[next_tid].position.x < X_IDXS[xidx]; next_tid++) {
+    for (int next_tid = tidx + 1; next_tid < TRAJECTORY_SIZE && best_plan.mean[next_tid].position.x < X_IDXS[xidx]; next_tid++) {
       tidx++;
     }
     if (tidx == TRAJECTORY_SIZE - 1) {
@@ -304,10 +304,10 @@ void fill_model(cereal::ModelDataV2::Builder &framed, const ModelDataRaw &net_ou
     }
 
     // interpolate to find `t` for the current xidx
-    float current_x_val = best_path.mean[tidx].position.x;
-    float next_x_val = best_path.mean[tidx+1].position.x;
+    float current_x_val = best_plan.mean[tidx].position.x;
+    float next_x_val = best_plan.mean[tidx+1].position.x;
     float p = (X_IDXS[xidx] - current_x_val) / (next_x_val - current_x_val);
-    path_t[xidx] = p * T_IDXS[tidx+1] + (1 - p) * T_IDXS[tidx];
+    plan_t[xidx] = p * T_IDXS[tidx+1] + (1 - p) * T_IDXS[tidx];
   }
 
   fill_plan(framed, best_plan);
