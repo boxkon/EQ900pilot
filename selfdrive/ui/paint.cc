@@ -747,6 +747,8 @@ static void bb_ui_draw_debug(UIState *s) {
     ui_draw_text(s, text_x, y, str, 22 * 2.5, textColor, "sans-regular");
 }
 
+AText textGear("sans-bold");
+
 static void draw_currentgear(UIState *s)  /*기어단수표시 by tenesi*/
 {  
   const UIScene *scene = &s->scene; 
@@ -759,16 +761,22 @@ static void draw_currentgear(UIState *s)  /*기어단수표시 by tenesi*/
   const int center_y = s->fb_h - footer_h / 2 + (radius * 0.75);
        
   snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);
+
   if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
-    ui_draw_text(s, center_x, center_y, strGear, 28 * 10., COLOR_GREEN, "sans-bold");
+    //ui_draw_text(s, center_x, center_y, strGear, 28 * 10., COLOR_GREEN, "sans-bold");
+    textGear.update(s, center_x, center_y, strGear, 28 * 10., COLOR_GREEN);
   } else if (s->scene.currentGear == 14 ) {
-    ui_draw_text(s, center_x, center_y, "R", 28 * 10., COLOR_RED, "sans-bold");
+    //ui_draw_text(s, center_x, center_y, "R", 28 * 10., COLOR_RED, "sans-bold");
+    textGear.update(s, center_x, center_y, "R", 28 * 10., COLOR_RED);
   } else if (ngetGearShifter == 1 ) {
-    ui_draw_text(s, center_x, center_y, "P", 28 * 10., COLOR_BLUE, "sans-bold");
+    //ui_draw_text(s, center_x, center_y, "P", 28 * 10., COLOR_BLUE, "sans-bold");
+    textGear.update(s, center_x, center_y, "P", 28 * 10., COLOR_BLUE);
   } else if (ngetGearShifter == 3 ) {
-    ui_draw_text(s, center_x, center_y, "N", 28 * 10., COLOR_YELLOW, "sans-semibold");
+    //ui_draw_text(s, center_x, center_y, "N", 28 * 10., COLOR_YELLOW, "sans-semibold");
+    textGear.update(s, center_x, center_y, "N", 28 * 10., COLOR_YELLOW);
   } else {
-    ui_draw_text(s, center_x, center_y, "", 28 * 10., COLOR_GREEN, "sans-bold");
+    //ui_draw_text(s, center_x, center_y, "", 28 * 10., COLOR_GREEN, "sans-bold");
+    textGear.update(s, center_x, center_y, "", 28 * 10., COLOR_GREEN);
   }
 }
 
