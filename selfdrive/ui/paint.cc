@@ -894,13 +894,13 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   bool is_cruise_set = (cruiseMaxSpeed > 0 && cruiseMaxSpeed < 255);
 
   const Rect rect = {(bdr_s * 2) - 10, int(bdr_s * 2), 184, 202};
-  ui_fill_rect(s->vg, rect, COLOR_BLACK_ALPHA(100), 30.);
+  ui_fill_rect(s->vg, rect, COLOR_BLACK_ALPHA(20), 30.);
   ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(100), 10, 20.);
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   const int text_x = rect.centerX();
   const int x = 0;
-  const int y = 5;
+  const int y = 10;
 
   if (is_cruise_set) {
     char str[256];
@@ -909,21 +909,21 @@ static void ui_draw_vision_maxspeed(UIState *s) {
     else
         snprintf(str, sizeof(str), "%d", (int)(applyMaxSpeed*0.621371 + 0.5));
 
-    ui_draw_text(s, text_x, 100 + y, str, 33 * 2.5, COLOR_WHITE, "sans-semibold");
+    ui_draw_text(s, text_x, 100 + y, str, 33 * 2.5, COLOR_YELLOW, "sans-semibold");
 
     if (s->scene.is_metric)
         snprintf(str, sizeof(str), "%d", (int)(cruiseMaxSpeed + 0.5));
     else
         snprintf(str, sizeof(str), "%d", (int)(cruiseMaxSpeed*0.621371 + 0.5));
 
-    ui_draw_text(s, text_x, 195 + y, str, 48 * 2.5, COLOR_WHITE, "sans-bold");
+    ui_draw_text(s, text_x, 195 + y, str, 48 * 2.5, COLOR_LIME, "sans-bold");
   } else {
     if(longControl)
-        ui_draw_text(s, text_x , 100 + y, "OP", 25 * 3, COLOR_WHITE_ALPHA(100), "sans-semibold");
+        ui_draw_text(s, text_x , 100 + y, "OP", 25 * 3, COLOR_YELLOW_ALPHA(150), "sans-bold");
     else
-        ui_draw_text(s, text_x, 100 + y, "MAX", 25 * 3, COLOR_WHITE_ALPHA(100), "sans-semibold");
+        ui_draw_text(s, text_x, 100 + y, "MAX", 25 * 3, COLOR_RED_ALPHA(100), "sans-bold");
 
-    ui_draw_text(s, text_x, 195 + y, "N/A", 42 * 2.5, COLOR_WHITE_ALPHA(100), "sans-semibold");
+    ui_draw_text(s, text_x, 195 + y, "N/A", 42 * 2.5, COLOR_LIME_ALPHA(100), "sans-bold");
   }
 }
 
@@ -975,7 +975,7 @@ static void ui_draw_vision_speed(UIState *s) {
       nvgLineTo(s->vg, viz_blinker_x - (viz_add*offset) - (viz_blinker_w/2), (header_h/2.1));
       nvgLineTo(s->vg, viz_blinker_x - (viz_add*offset)                    , (header_h/1.4));
       nvgClosePath(s->vg);
-      nvgFillColor(s->vg, COLOR_LIME_ALPHA(180 * alpha));
+      nvgFillColor(s->vg, COLOR_LIME_ALPHA(100 * alpha));
       nvgFill(s->vg);
     }
     if(s->scene.rightBlinker) {
@@ -984,7 +984,7 @@ static void ui_draw_vision_speed(UIState *s) {
       nvgLineTo(s->vg, viz_blinker_x + (viz_add*offset) + (viz_blinker_w*1.5), (header_h/2.1));
       nvgLineTo(s->vg, viz_blinker_x + (viz_add*offset) + viz_blinker_w      , (header_h/1.4));
       nvgClosePath(s->vg);
-      nvgFillColor(s->vg, COLOR_LIME_ALPHA(180 * alpha));
+      nvgFillColor(s->vg, COLOR_LIME_ALPHA(100 * alpha));
       nvgFill(s->vg);
     }
   }
