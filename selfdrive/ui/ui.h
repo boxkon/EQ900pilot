@@ -73,6 +73,10 @@
 #define COLOR_FORIP_ALPHA(x) nvgRGBA(231, 255, 51, x)
 #define COLOR_FORGEAR nvgRGBA(77, 178, 255, 255)
 #define COLOR_FORGEAR_ALPHA(x) nvgRGBA(77, 178, 255, x)
+#define COLOR_CYAN nvgRGBA(0, 255, 255, 255)
+#define COLOR_CYAN_ALPHA(x) nvgRGBA(0, 255, 255, x)
+#define COLOR_MAGENTA nvgRGBA(255,0,255, 255)
+#define COLOR_MAGENTA_ALPHA(x) nvgRGBA(255,0,255, x)
 
 typedef cereal::CarControl::HUDControl::AudibleAlert AudibleAlert;
 
