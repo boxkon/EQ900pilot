@@ -25,7 +25,7 @@ class CarInterface(CarInterfaceBase):
     v_current_kph = current_speed * CV.MS_TO_KPH
 
     gas_max_bp = [0., 10., 20., 50., 80., 100., 130.]
-    gas_max_v = [2.5, 1.5, 1.0, 0.65, 0.3, 0.2, 0.1]
+    gas_max_v = [2.75, 1.65, 1.1, 0.65, 0.3, 0.2, 0.1]
 
     brake_max_bp = [0, 50., 80., 130.]
     brake_max_v = [CarControllerParams.ACCEL_MIN, -3., -3.5, -2.3]
@@ -68,7 +68,7 @@ class CarInterface(CarInterfaceBase):
 
     # longitudinal
     ret.longitudinalTuning.kpBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 40.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 100.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
-    ret.longitudinalTuning.kpV = [1., 0.75, 0.6, 0.55, 0.5, 0.35, 0.3]
+    ret.longitudinalTuning.kpV = [1.05, 0.85, 0.65, 0.6, 0.5, 0.35, 0.3]
     ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
     ret.longitudinalTuning.kiV = [0.05, 0.03]
     ret.longitudinalTuning.deadzoneBP = [0., 100.*CV.KPH_TO_MS]
@@ -76,9 +76,9 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalActuatorDelayLowerBound = 0.15
     ret.longitudinalActuatorDelayUpperBound = 0.15
 
-    ret.startAccel = -0.4
+    ret.startAccel = -0.8
     ret.stopAccel = -2.0
-    ret.startingAccelRate = 6.0  # brake_travel/s while releasing on restart
+    ret.startingAccelRate = 6.5  # brake_travel/s while releasing on restart
     ret.stoppingDecelRate = 0.3  # brake_travel/s while trying to stop
     ret.vEgoStopping = 0.6
     ret.vEgoStarting = 0.5
