@@ -215,7 +215,7 @@ class CarState(CarStateBase):
     ret.tpms.rr = tpms_unit * cp.vl["TPMS11"]["PRESSURE_RR"]
 
     # for activate HDA
-    if self.CP.carFingerprint in FEATURES["send_hda_state_2"]:
+    if self.CP.carFingerprint in FEATURES["send_has_hda"]:
       self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
 
     return ret
@@ -623,7 +623,7 @@ class CarState(CarStateBase):
       ]
 
     # for activate HDA
-    if CP.carFingerprint in FEATURES["send_hda_state_2"]:
+    if CP.carFingerprint in FEATURES["send_has_hda"]:
       signals += [
         ("HDA_USM", "LFAHDA_MFC", 0),
         ("HDA_Active", "LFAHDA_MFC", 0),
