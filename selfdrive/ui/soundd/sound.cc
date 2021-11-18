@@ -7,14 +7,13 @@
 // TODO: detect when we can't display the UI
 
 Sound::Sound(QObject *parent) : sm({"carState", "controlsState", "deviceState"}) {
-  const QString sound_asset_path = Hardware::TICI() ? "../../assets/sounds_tici/" : "../../assets/sounds/";
   for (auto &[alert, fn, loops] : sound_list) {
     QSoundEffect *s = new QSoundEffect(this);
     QObject::connect(s, &QSoundEffect::statusChanged, [=]() {
       assert(s->status() != QSoundEffect::Error);
     });
     s->setVolume(Hardware::MIN_VOLUME);
-    s->setSource(QUrl::fromLocalFile(sound_asset_path + fn));
+    s->setSource(QUrl::fromLocalFile("../../assets/sounds/" + fn));
     sounds[alert] = {s, loops};
   }
 
@@ -42,7 +41,7 @@ void Sound::update() {
 
   // scale volume with speed
   if (sm.updated("carState")) {
-    float volume = util::map_val(sm["carState"].getCarState().getVEgo(), 0.f, 20.f,
+    float volume = util::map_val(sm["carState"].getCarState().getVEgo(), 0.f, 29.f,
                                  Hardware::MIN_VOLUME, Hardware::MAX_VOLUME);
     for (auto &[s, loops] : sounds) {
       s->setVolume(std::round(100 * volume) / 100);
