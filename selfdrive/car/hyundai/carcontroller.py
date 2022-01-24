@@ -65,6 +65,7 @@ class CarController():
     self.scc_live = not CP.radarOffCan
 
     self.turning_indicator_alert = False
+    self.lane_blink_on = False
 
     param = Params()
 
@@ -73,6 +74,7 @@ class CarController():
     self.stock_navi_decel_enabled = param.get_bool('StockNaviDecelEnabled')
     self.keep_steering_turn_signals = param.get_bool('KeepSteeringTurnSignals')
     self.warning_over_speed_limit = param.get_bool('WarningOverSpeedLimit')
+    self.steeringwheel_haptic = param.get_bool('SteeringwheelHaptic')
 
     self.scc_smoother = SccSmoother()
     self.last_blinker_frame = 0
@@ -141,6 +143,14 @@ class CarController():
     self.prev_scc_cnt = CS.scc11["AliveCounterACC"]
 
     self.lkas11_cnt = (self.lkas11_cnt + 1) % 0x10
+
+    if self.steeringwheel_haptic:
+      if self.scc_smoother.active_cam:
+        if frame % 50 == 0:
+          self.lane_blink_on = not self.lane_blink_on
+        left_lane_warning = right_lane_warning = 1
+      else:
+        self.lane_blink_on = False
 
     can_sends = []
     can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
