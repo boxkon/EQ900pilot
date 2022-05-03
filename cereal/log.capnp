@@ -571,6 +571,8 @@ struct ControlsState @0x97ff69c53601abf1 {
   aTarget @35 :Float32;
   curvature @37 :Float32;  # path curvature from vehicle model
   forceDecel @51 :Bool;
+  desiredCurvature @74 :Float32;
+  desiredCurvatureRate @75 :Float32;
 
   # UI alerts
   alertText1 @24 :Text;
