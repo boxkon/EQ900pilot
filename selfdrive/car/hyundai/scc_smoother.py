@@ -17,7 +17,7 @@ from selfdrive.road_speed_limiter import road_speed_limiter_get_max_speed, road_
   get_road_speed_limiter
 
 SYNC_MARGIN = 3.
-CREEP_SPEED = 2.5
+CREEP_SPEED = 3.
 
 # do not modify
 MIN_SET_SPEED_KPH = V_CRUISE_MIN
@@ -350,7 +350,7 @@ class SccSmoother:
     #  if not lead.radar:
     #    brake_factor *= 0.975
 
-    start_boost = interp(CS.out.vEgo, [0.0, 2 * CREEP_SPEED, 4 * CREEP_SPEED], [0.6, 0.6, 0.0])
+    start_boost = interp(CS.out.vEgo, [0.0, 1.5 * CREEP_SPEED, 3 * CREEP_SPEED], [0.6, 0.6, 0.0])
     is_accelerating = interp(accel, [0.0, 0.2], [0.0, 1.0])
     boost = start_boost * is_accelerating
 
