@@ -45,10 +45,19 @@ RawLogger::~RawLogger() {
   av_frame_free(&frame);
 }
 
-void RawLogger::encoder_open(const char* path) {
-  writer = new VideoWriter(path, this->filename, true, frame->width, frame->height, this->fps, false, true);
-  // write the header
-  writer->write(NULL, 0, 0, true, false);
+void FfmpegEncoder::encoder_open(const char* path) {
+  const AVCodec *codec = avcodec_find_encoder(AV_CODEC_ID_FFVHUFF);
+
+  this->codec_ctx = avcodec_alloc_context3(codec);
+  assert(this->codec_ctx);
+  this->codec_ctx->width = frame->width;
+  this->codec_ctx->height = frame->height;
+  this->codec_ctx->pix_fmt = AV_PIX_FMT_YUV420P;
+  this->codec_ctx->time_base = (AVRational){ 1, fps };
+  int err = avcodec_open2(this->codec_ctx, codec, NULL);
+  assert(err >= 0);
+
+  writer_open(path);
   is_open = true;
 }
 
