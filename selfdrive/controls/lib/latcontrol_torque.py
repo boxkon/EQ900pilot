@@ -35,7 +35,6 @@ def apply_deadzone(error, deadzone):
 class LatControlTorque(LatControl):
   def __init__(self, CP, CI):
     super().__init__(CP, CI)
-    self.CP = CP
     self.pid = PIDController(CP.lateralTuning.torque.kp, CP.lateralTuning.torque.ki,
                              k_d=CP.lateralTuning.torque.kd,
                              k_f=CP.lateralTuning.torque.kf, pos_limit=self.steer_max, neg_limit=-self.steer_max)
@@ -45,6 +44,7 @@ class LatControlTorque(LatControl):
     self.deadzone = CP.lateralTuning.torque.deadzone
     self.errors = []
     self.tune = nTune(CP, self)
+    self.kf = CP.lateralTuning.torque.kf
 
   def reset(self):
     super().reset()
@@ -90,7 +90,7 @@ class LatControlTorque(LatControl):
       # convert friction into lateral accel units for feedforward
       friction_compensation = interp(desired_lateral_jerk, [-JERK_THRESHOLD, JERK_THRESHOLD],
                                      [-self.friction, self.friction])
-      ff += friction_compensation / self.CP.lateralTuning.torque.kf
+      ff += friction_compensation / self.kf
       output_torque = self.pid.update(error_deadzone, error_rate,
                                       override=CS.steeringPressed, feedforward=ff,
                                       speed=CS.vEgo,
