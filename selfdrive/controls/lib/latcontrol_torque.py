@@ -41,10 +41,10 @@ class LatControlTorque(LatControl):
     self.get_steer_feedforward = CI.get_steer_feedforward_function()
     self.use_steering_angle = CP.lateralTuning.torque.useSteeringAngle
     self.friction = CP.lateralTuning.torque.friction
+    self.kf = CP.lateralTuning.torque.kf
     self.deadzone = CP.lateralTuning.torque.deadzone
     self.errors = []
     self.tune = nTune(CP, self)
-    self.kf = CP.lateralTuning.torque.kf
 
   def reset(self):
     super().reset()
@@ -88,10 +88,9 @@ class LatControlTorque(LatControl):
 
       ff = desired_lateral_accel - params.roll * ACCELERATION_DUE_TO_GRAVITY
       # convert friction into lateral accel units for feedforward
-      friction_compensation = interp(desired_lateral_jerk, [-JERK_THRESHOLD, JERK_THRESHOLD],
-                                     [-self.friction, self.friction])
+      friction_compensation = interp(desired_lateral_jerk, [-JERK_THRESHOLD, JERK_THRESHOLD], [-self.friction, self.friction])
       ff += friction_compensation / self.kf
-      output_torque = self.pid.update(error_deadzone, error_rate,
+      output_torque = self.pid.update(error, error_rate,
                                       override=CS.steeringPressed, feedforward=ff,
                                       speed=CS.vEgo,
                                       freeze_integrator=CS.steeringRateLimited)
