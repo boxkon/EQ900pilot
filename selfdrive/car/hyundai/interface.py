@@ -86,8 +86,8 @@ class CarInterface(CarInterfaceBase):
     else:
       ret.lateralTuning.init('hybrid')
 
-      ret.lateralTuning.hybrid.kp = 0.25
-      ret.lateralTuning.hybrid.ki = 0.01
+      ret.lateralTuning.hybrid.kp = 0.3
+      ret.lateralTuning.hybrid.ki = 0.03
       ret.lateralTuning.hybrid.kf = 0.01
       ret.lateralTuning.hybrid.kd = 0.1
 
@@ -135,9 +135,9 @@ class CarInterface(CarInterfaceBase):
       if ret.lateralTuning.which() == 'torque':
         ret.lateralTuning.torque.useSteeringAngle = True
         max_lat_accel = 2.5
-        ret.lateralTuning.torque.kp = 1.67 / max_lat_accel
-        ret.lateralTuning.torque.kf = 0.75 / max_lat_accel
-        ret.lateralTuning.torque.ki = 0.01 / max_lat_accel
+        ret.lateralTuning.torque.kp = 1.5 / max_lat_accel
+        ret.lateralTuning.torque.kf = 0.7 / max_lat_accel
+        ret.lateralTuning.torque.ki = 0.05 / max_lat_accel
         ret.lateralTuning.torque.friction = 0.001
         ret.lateralTuning.torque.kd = 0.0
 
