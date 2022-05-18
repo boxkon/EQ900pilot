@@ -209,15 +209,15 @@ AlertCallbackType = Callable[[car.CarParams, car.CarState, messaging.SubMaster, 
 
 def soft_disable_alert(alert_text_2: str) -> AlertCallbackType:
   def func(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
-    if soft_disable_time < int(0.5 / DT_CTRL):
-      return ImmediateDisableAlert(alert_text_2)
+    #if soft_disable_time < int(0.5 / DT_CTRL):
+    #  return ImmediateDisableAlert(alert_text_2)
     return SoftDisableAlert(alert_text_2)
   return func
 
 def user_soft_disable_alert(alert_text_2: str) -> AlertCallbackType:
   def func(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
-    if soft_disable_time < int(0.5 / DT_CTRL):
-      return ImmediateDisableAlert(alert_text_2)
+    #if soft_disable_time < int(0.5 / DT_CTRL):
+    #  return ImmediateDisableAlert(alert_text_2)
     return UserSoftDisableAlert(alert_text_2)
   return func
 
@@ -329,7 +329,7 @@ def joystick_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster,
   vals = f"Gas: {round(gb * 100.)}%, Steer: {round(steer * 100.)}%"
   return NormalPermanentAlert("Joystick Mode", vals)
 
-def auto_lane_change_alert(CP: car.CarParams, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
+def auto_lane_change_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
   alc_timer = sm['lateralPlan'].autoLaneChangeTimer
   return Alert(
     "Auto Lane Change starts in (%d)" % alc_timer,
