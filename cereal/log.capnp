@@ -1835,6 +1835,7 @@ struct EncodeData {
   idx @0 :EncodeIndex;
   data @1 :Data;
   header @2 :Data;
+  unixTimestampNanos @3 :UInt64;
 }
 
 struct RoadLimitSpeed {
