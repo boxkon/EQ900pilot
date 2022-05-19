@@ -198,8 +198,8 @@ def create_scc14(packer, enabled, e_vgo, stopping, standstill, accel, gas_presse
   values["ObjGap"] = objgap
   values["ComfortBandUpper"] = 0.
   values["ComfortBandLower"] = 0.
-  values["JerkUpperLimit"] = max(jerk, 1.0) if (enabled and not stopping) else 0,  # stock usually is 1.0 but sometimes uses higher values
-  values["JerkLowerLimit"] = max(-jerk, 1.0) if enabled else 0,  # stock usually is 0.5 but sometimes uses higher values
+  values["JerkUpperLimit"] = max(jerk, 1.5) if (enabled and not stopping) else 0,  # stock usually is 1.0 but sometimes uses higher values
+  values["JerkLowerLimit"] = max(-jerk, 0.5) if enabled else 0,  # stock usually is 0.5 but sometimes uses higher values
 
   return packer.make_can_msg("SCC14", 0, values)
 
