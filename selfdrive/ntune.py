@@ -225,13 +225,13 @@ class nTune():
       updated = True
     if self.checkValue("maxLatAccel", 0.5, 4.0, 2.5):
       updated = True
-    if self.checkValue("friction", 0.0, 0.2, 0.001):
+    if self.checkValue("friction", 0.0, 0.2, 0.0):
       updated = True
-    if self.checkValue("ki_factor", 0.0, 1.0, 0.05):
+    if self.checkValue("ki_factor", 0.0, 1.0, 0.1):
       updated = True
-    if self.checkValue("kd", 0.0, 2.0, 0.0):
+    if self.checkValue("kd", 0.0, 2.0, 1.0):
       updated = True
-    if self.checkValue("deadzone", 0.0, 0.05, 0.02):
+    if self.checkValue("deadzone", 0.0, 0.05, 0.01):
       updated = True
 
     return updated
