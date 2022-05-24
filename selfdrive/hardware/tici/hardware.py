@@ -518,7 +518,7 @@ class Tici(HardwareBase):
     time.sleep(2)
     gpio_set(GPIO.STM_RST_N, 0)
     gpio_set(GPIO.STM_BOOT0, 0)
-
+	
   def get_ip_address(self):
     try:
       wlan = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8').strip()
