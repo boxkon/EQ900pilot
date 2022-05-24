@@ -17,6 +17,7 @@ from common.params import Params
 from common.timeout import Timeout
 from selfdrive.car.fingerprints import FW_VERSIONS
 from selfdrive.car.car_helpers import get_car, interfaces
+from selfdrive.test.process_replay.helpers import OpenpilotPrefix
 from selfdrive.manager.process import PythonProcess
 from selfdrive.manager.process_config import managed_processes
 
@@ -338,10 +339,11 @@ CONFIGS = [
 
 
 def replay_process(cfg, lr, fingerprint=None):
-  if cfg.fake_pubsubmaster:
-    return python_replay_process(cfg, lr, fingerprint)
-  else:
-    return cpp_replay_process(cfg, lr, fingerprint)
+  with OpenpilotPrefix():
+    if cfg.fake_pubsubmaster:
+      return python_replay_process(cfg, lr, fingerprint)
+    else:
+      return cpp_replay_process(cfg, lr, fingerprint)
 
 def setup_env(simulation=False):
   params = Params()
