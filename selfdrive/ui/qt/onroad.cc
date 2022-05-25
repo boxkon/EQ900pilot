@@ -697,8 +697,7 @@ void NvgWindow::drawSpeed(QPainter &p) {
   p.save();
   UIState *s = uiState();
   const SubMaster &sm = *(s->sm);
-  float cur_speed = sm["carState"].getCarState().getCluSpeedMs() * (s->scene.is_metric ? MS_TO_KPH : MS_TO_MPH);  
-  //float cur_speed = std::max(0.0, sm["carState"].getCarState().getCluSpeedMs() * (s->scene.is_metric ? MS_TO_KPH : MS_TO_MPH));
+  float cur_speed = std::max(0.0, sm["carState"].getCarState().getCluSpeedMs() * (s->scene.is_metric ? MS_TO_KPH : MS_TO_MPH));
   auto car_state = sm["carState"].getCarState();
   float accel = car_state.getAEgo();
 
@@ -1088,8 +1087,8 @@ void NvgWindow::drawDebugText(QPainter &p) {
   float aReqValueMin = controls_state.getAReqValueMin();
   float aReqValueMax = controls_state.getAReqValueMax();
 
-//  int sccStockCamAct = (int)controls_state.getSccStockCamAct();
-//  int sccStockCamStatus = (int)controls_state.getSccStockCamStatus();
+  //int sccStockCamAct = (int)controls_state.getSccStockCamAct();
+  //int sccStockCamStatus = (int)controls_state.getSccStockCamStatus();
 
   float vEgo = car_state.getVEgo();
   float vEgoRaw = car_state.getVEgoRaw();
