@@ -84,7 +84,7 @@ protected:
   void drawTurnSignals(QPainter &p);
   void drawGpsStatus(QPainter &p);
   void drawDebugText(QPainter &p);
-  void drawHud(QPainter &p);
+  void drawHud(QPainter &p, const cereal::ModelDataV2::Reader &model);
   //boxkon
   void drawCurrentGear(QPainter &p);
 
