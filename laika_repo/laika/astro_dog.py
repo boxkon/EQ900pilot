@@ -1,13 +1,13 @@
 from collections import defaultdict
 from typing import DefaultDict, List, Optional, Union
 
-from .helpers import get_constellation, get_closest, get_el_az, TimeRangeHolder
+from .helpers import ConstellationId, get_constellation, get_closest, get_el_az, TimeRangeHolder
 from .ephemeris import GLONASSEphemeris, GPSEphemeris, PolyEphemeris, parse_sp3_orbits, parse_rinex_nav_msg_gps, \
   parse_rinex_nav_msg_glonass
 from .downloader import download_orbits, download_orbits_russia, download_nav, download_ionex, download_dcb
 from .downloader import download_cors_station
 from .trop import saast
-from .iono import parse_ionex
+from .iono import IonexMap, parse_ionex
 from .dcb import DCB, parse_dcbs
 from .gps_time import GPSTime
 from .dgps import get_closest_station_names, parse_dgps
@@ -18,7 +18,7 @@ MAX_DGPS_DISTANCE = 100_000  # in meters, because we're not barbarians
 
 class AstroDog:
   '''
-  auto_update: flag indicating whether laika should fetch files from web
+  use_internet: flag indicating whether laika should fetch files from web
   cache_dir:   directory where data files are downloaded to and cached
   pull_orbit:  flag indicating whether laika should fetch sp3 orbits
                  instead of nav files (orbits are more accurate)
@@ -28,39 +28,37 @@ class AstroDog:
 
   '''
 
-  def __init__(self, auto_update=True,
+  def __init__(self, use_internet=True,
                cache_dir='/tmp/gnss/',
                pull_orbit=True, dgps=False,
-               valid_const=['GPS', 'GLONASS'],
-               use_internet=True):
-    self.auto_update = auto_update
+               valid_const=['GPS', 'GLONASS']):
+    self.use_internet = use_internet
     self.cache_dir = cache_dir
+
     self.dgps = dgps
-    self.dgps_delays = []
-    self.ionex_maps = []
     self.pull_orbit = pull_orbit
     self.valid_const = valid_const
-    self.cached_ionex = None
-    self.cached_dgps = None
-
-    self.use_internet = use_internet
 
     self.orbit_fetched_times = TimeRangeHolder()
     self.nav_fetched_times = TimeRangeHolder()
     self.dcbs_fetched_times = TimeRangeHolder()
 
+    self.dgps_delays = []
+    self.ionex_maps: List[IonexMap] = []
     self.orbits: DefaultDict[str, List[PolyEphemeris]] = defaultdict(list)
     self.nav: DefaultDict[str, List[Union[GPSEphemeris, GLONASSEphemeris]]] = defaultdict(list)
     self.dcbs: DefaultDict[str, List[DCB]] = defaultdict(list)
 
+    self.cached_ionex: Optional[IonexMap] = None
+    self.cached_dgps = None
     self.cached_orbit: DefaultDict[str, Optional[PolyEphemeris]] = defaultdict(lambda: None)
     self.cached_nav: DefaultDict[str, Union[GPSEphemeris, GLONASSEphemeris, None]] = defaultdict(lambda: None)
     self.cached_dcb: DefaultDict[str, Optional[DCB]] = defaultdict(lambda: None)
 
-  def get_ionex(self, time):
-    ionex = self._get_latest_valid_data(self.ionex_maps, self.cached_ionex, self.get_ionex_data, time)
+  def get_ionex(self, time) -> Optional[IonexMap]:
+    ionex: Optional[IonexMap] = self._get_latest_valid_data(self.ionex_maps, self.cached_ionex, self.get_ionex_data, time)
     if ionex is None:
-      if self.auto_update:
+      if self.use_internet:
         raise RuntimeError("Pulled ionex, but still can't get valid for time " + str(time))
     else:
       self.cached_ionex = ionex
@@ -116,8 +114,11 @@ class AstroDog:
 
   def get_dgps_corrections(self, time, recv_pos):
     latest_data = self._get_latest_valid_data(self.dgps_delays, self.cached_dgps, self.get_dgps_data, time, recv_pos=recv_pos)
-    if latest_data is None and self.auto_update:
-      raise RuntimeError("Pulled dgps, but still can't get valid for time " + str(time))
+    if latest_data is None:
+      if self.use_internet:
+        raise RuntimeError("Pulled dgps, but still can't get valid for time " + str(time))
+    else:
+      self.cached_dgps = latest_data
     return latest_data
 
   def add_ephem(self, new_ephem, ephems):
@@ -129,17 +130,16 @@ class AstroDog:
     ephems[prn].append(new_ephem)
 
   def get_nav_data(self, time):
-    ephems_gps, ephems_glonass = [], []
-    if 'GPS' in self.valid_const:
-      file_path_gps = download_nav(time, cache_dir=self.cache_dir, constellation='GPS')
-      if file_path_gps:
-        ephems_gps = parse_rinex_nav_msg_gps(file_path_gps)
-    if 'GLONASS' in self.valid_const:
-      file_path_glonass = download_nav(time, cache_dir=self.cache_dir, constellation='GLONASS')
-      if file_path_glonass:
-        ephems_glonass = parse_rinex_nav_msg_glonass(file_path_glonass)
+    def download_and_parse(constellation, parse_rinex_nav_func):
+      file_path = download_nav(time, cache_dir=self.cache_dir, constellation=constellation)
+      return parse_rinex_nav_func(file_path) if file_path else []
 
-    fetched_ephems = (ephems_gps + ephems_glonass)
+    fetched_ephems = []
+
+    if 'GPS' in self.valid_const:
+      fetched_ephems += download_and_parse(ConstellationId.GPS, parse_rinex_nav_msg_gps)
+    if 'GLONASS' in self.valid_const:
+      fetched_ephems += download_and_parse(ConstellationId.GLONASS, parse_rinex_nav_msg_glonass)
 
     for ephem in fetched_ephems:
       self.add_ephem(ephem, self.nav)
@@ -151,8 +151,8 @@ class AstroDog:
       max_epoch = max_ephem.epoch + max_ephem.max_time_diff
       self.nav_fetched_times.add(min_epoch, max_epoch)
     else:
-      begin_day = GPSTime(time.week, constants.SECS_IN_DAY * (time.tow // (constants.SECS_IN_DAY)))
-      end_day = GPSTime(time.week, constants.SECS_IN_DAY * (1 + (time.tow // (constants.SECS_IN_DAY))))
+      begin_day = GPSTime(time.week, constants.SECS_IN_DAY * (time.tow // constants.SECS_IN_DAY))
+      end_day = GPSTime(time.week, constants.SECS_IN_DAY * (1 + (time.tow // constants.SECS_IN_DAY)))
       self.nav_fetched_times.add(begin_day, end_day)
 
   def get_orbit_data(self, time):
@@ -285,15 +285,16 @@ class AstroDog:
     if self.dgps and not no_dgps:
       return self._get_delay_dgps(prn, rcv_pos, time)
 
-    if not freq:
-      freq = self.get_frequency(prn, time, signal)
     ionex = self.get_ionex(time)
+    if not freq and ionex is not None:
+      freq = self.get_frequency(prn, time, signal)
     dcb = self.get_dcb(prn, time)
-    if ionex is None or dcb is None or freq is None:
+    # When using internet we expect all data or return None
+    if self.use_internet and (ionex is None or dcb is None or freq is None):
       return None
-    iono_delay = ionex.get_delay(rcv_pos, az, el, sat_pos, time, freq)
+    iono_delay = ionex.get_delay(rcv_pos, az, el, sat_pos, time, freq) if ionex is not None else 0.
     trop_delay = saast(rcv_pos, el)
-    code_bias = dcb.get_delay(signal)
+    code_bias = dcb.get_delay(signal) if dcb is not None else 0.
     return iono_delay + trop_delay + code_bias
 
   def _get_delay_dgps(self, prn, rcv_pos, time):
