@@ -10,9 +10,6 @@
 #include "selfdrive/camerad/cameras/camera_common.h"
 #include "selfdrive/ui/ui.h"
 
-const int FRAME_BUFFER_SIZE = 5;
-static_assert(FRAME_BUFFER_SIZE <= YUV_BUFFER_COUNT);
-
 class CameraViewWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   Q_OBJECT
 
@@ -22,12 +19,11 @@ public:
   ~CameraViewWidget();
   void setStreamType(VisionStreamType type) { stream_type = type; }
   void setBackgroundColor(const QColor &color) { bg = color; }
-  void setFrameId(int frame_id) { draw_frame_id = frame_id; }
 
 signals:
   void clicked();
   void vipcThreadConnected(VisionIpcClient *);
-  void vipcThreadFrameReceived(VisionBuf *, quint32);
+  void vipcThreadFrameReceived(VisionBuf *);
 
 protected:
   void paintGL() override;
@@ -40,8 +36,8 @@ protected:
   void vipcThread();
 
   bool zoomed_view;
+  VisionBuf *latest_frame = nullptr;
   GLuint frame_vao, frame_vbo, frame_ibo;
-  GLuint textures[3];
   mat4 frame_mat;
   std::unique_ptr<QOpenGLShaderProgram> program;
   QColor bg = QColor("#000000");
@@ -52,10 +48,9 @@ protected:
   std::atomic<VisionStreamType> stream_type;
   QThread *vipc_thread = nullptr;
 
-  std::deque<std::pair<uint32_t, VisionBuf*>> frames;
-  uint32_t draw_frame_id = 0;
+  GLuint textures[3];
 
 protected slots:
   void vipcConnected(VisionIpcClient *vipc_client);
-  void vipcFrameReceived(VisionBuf *vipc_client, uint32_t frame_id);
+  void vipcFrameReceived(VisionBuf *vipc_client);
 };

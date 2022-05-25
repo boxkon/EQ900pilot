@@ -368,10 +368,7 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
 }
 
 void NvgWindow::paintGL() {
-  UIState *s = uiState();
-  const cereal::ModelDataV2::Reader &model = (*s->sm)["modelV2"].getModelV2();
-  CameraViewWidget::setFrameId(model.getFrameId());
-  CameraViewWidget::paintGL();
+}
 
 void NvgWindow::paintEvent(QPaintEvent *event) {
   QPainter p;
@@ -381,20 +378,9 @@ void NvgWindow::paintEvent(QPaintEvent *event) {
   CameraViewWidget::paintGL();
   p.endNativePainting();
 
+  UIState *s = uiState();
   if (s->worldObjectsVisible()) {
     drawHud(p);
-    
-    drawLaneLines(painter, s);
-
-    if (s->scene.longitudinal_control) {
-      const auto leads = model.getLeadsV3();
-      if (leads[0].getProb() > .5) {
-        drawLead(painter, leads[0], s->scene.lead_vertices[0]);
-      }
-      if (leads[1].getProb() > .5 && (std::abs(leads[1].getX()[0] - leads[0].getX()[0]) > 3.0)) {
-        drawLead(painter, leads[1], s->scene.lead_vertices[1]);
-      }
-    }
   }
 
   p.end();
