@@ -4,9 +4,7 @@ import os
 import sys
 import threading
 import time
-import shutil
 import signal
-import uuid
 from collections import namedtuple
 
 import capnp
@@ -338,35 +336,13 @@ CONFIGS = [
   ),
 ]
 
-def setup_prefix():
-  os.environ['OPENPILOT_PREFIX'] = str(uuid.uuid4())
-  msgq_path = os.path.join('/dev/shm', os.environ['OPENPILOT_PREFIX'])
-  try:
-    os.mkdir(msgq_path)
-  except FileExistsError:
-    pass
-
-
-def teardown_prefix():
-  if not os.environ.get("OPENPILOT_PREFIX", 0):
-    return
-  symlink_path = Params().get_param_path()
-  if os.path.exists(symlink_path):
-    shutil.rmtree(os.path.realpath(symlink_path), ignore_errors=True)
-    os.remove(symlink_path)
-  msgq_path = os.path.join('/dev/shm', os.environ['OPENPILOT_PREFIX'])
-  shutil.rmtree(msgq_path, ignore_errors=True)
-
 
 def replay_process(cfg, lr, fingerprint=None):
-  setup_prefix()
-  try:
+  with OpenpilotPrefix():
     if cfg.fake_pubsubmaster:
       return python_replay_process(cfg, lr, fingerprint)
     else:
       return cpp_replay_process(cfg, lr, fingerprint)
-  finally:
-    teardown_prefix()
 
 def setup_env(simulation=False):
   params = Params()
