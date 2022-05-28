@@ -148,9 +148,12 @@ def create_scc11(packer, frame, enabled, set_speed, lead_visible, scc_live, scc1
 
   if not scc_live:
     values["MainMode_ACC"] = 1
-    values["VSetDis"] = set_speed
-    values["ObjValid"] = 1 if enabled else 0
-#  values["ACC_ObjStatus"] = lead_visible
+    values["TauGapSet"] = 4
+    values["VSetDis"] = set_speed if enabled else 0
+    values["ObjValid"] = 0 # TODO: these two bits may allow for better longitudinal control
+    values["ACC_ObjStatus"] = 0
+    values["ACC_ObjRelSpd"] = 0
+    values["ACC_ObjDist"] = 0
 
   return packer.make_can_msg("SCC11", 0, values)
 
