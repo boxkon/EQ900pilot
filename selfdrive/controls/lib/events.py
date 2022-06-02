@@ -260,7 +260,40 @@ def out_of_space_alert(CP: car.CarParams, sm: messaging.SubMaster, metric: bool,
   return NormalPermanentAlert("Out of Storage", f"{full_perc}% full")
 
 
-def overheat_alert(CP: car.CarParams, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
+def posenet_invalid_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
+  mdl = sm['modelV2'].velocity.x[0] if len(sm['modelV2'].velocity.x) else math.nan
+  err = CS.vEgo - mdl
+  msg = f"Speed Error: {err:.1f} m/s"
+  return NoEntryAlert(msg, alert_text_1="Posenet Speed Invalid")
+
+
+def process_not_running_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
+  not_running = [p.name for p in sm['managerState'].processes if not p.running and p.shouldBeRunning]
+  msg = ', '.join(not_running)
+  return NoEntryAlert(msg, alert_text_1="Process Not Running")
+
+
+def comm_issue_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
+  bs = [s for s in sm.data.keys() if not sm.all_checks([s, ])]
+  msg = ', '.join(bs[:4])  # can't fit too many on one line
+  return NoEntryAlert(msg, alert_text_1="Communication Issue Between Processes")
+
+
+def camera_malfunction_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
+  all_cams = ('roadCameraState', 'driverCameraState', 'wideRoadCameraState')
+  bad_cams = [s.replace('State', '') for s in all_cams if s in sm.data.keys() and not sm.all_checks([s, ])]
+  return NormalPermanentAlert("Camera Malfunction", ', '.join(bad_cams))
+
+
+def calibration_invalid_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
+  rpy = sm['liveCalibration'].rpyCalib
+  yaw = math.degrees(rpy[2] if len(rpy) == 3 else math.nan)
+  pitch = math.degrees(rpy[1] if len(rpy) == 3 else math.nan)
+  angles = f"Pitch: {pitch:.1f}°, Yaw: {yaw:.1f}°"
+  return NormalPermanentAlert("Calibration Invalid", angles)
+
+
+def overheat_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
   cpu = max(sm['deviceState'].cpuTempC, default=0.)
   gpu = max(sm['deviceState'].gpuTempC, default=0.)
   temp = max((cpu, gpu, sm['deviceState'].memoryTempC))
