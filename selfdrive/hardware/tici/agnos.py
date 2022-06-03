@@ -23,10 +23,6 @@ class StreamingDecompressor:
     self.sha256 = hashlib.sha256()
 
   def read(self, length: int) -> bytes:
-
-    if self.start_time == 0.0:
-      self.start_time = self.last_read = time.monotonic()
-
     while len(self.buf) < length:
       self.req.raise_for_status()
 
@@ -37,13 +33,6 @@ class StreamingDecompressor:
         break
       out = self.decompressor.decompress(compressed)
       self.buf += out
-      self.downloaded += len(out)
-      now = time.monotonic()
-      if (now - self.last_read > 1):
-        percent_done = round(self.downloaded / self.file_size * 100)
-        speed = round(self.downloaded / (now -  self.start_time) / 1024)
-        print(f"Downloaded {percent_done}% at avg speed {speed} kbps: {percent_done}", flush=True)
-        self.last_read = now
 
     result = self.buf[:length]
     self.buf = self.buf[length:]
