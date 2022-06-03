@@ -294,7 +294,7 @@ jobs:
                         ./selfdrive/common/tests/test_util && \
                         ./selfdrive/common/tests/test_swaglog && \
                         ./selfdrive/loggerd/tests/test_logger &&\
-                        ./selfdrive/proclogd/tests/test_proclog && \
+                        ./system/proclogd/tests/test_proclog && \
                         ./selfdrive/ui/replay/tests/test_replay && \
                         ./selfdrive/camerad/test/ae_gray_test && \
                         coverage xml"
