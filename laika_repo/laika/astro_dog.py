@@ -1,10 +1,12 @@
 from collections import defaultdict
-from typing import DefaultDict, List, Optional, Union
+from concurrent.futures import ThreadPoolExecutor
+from typing import DefaultDict, Iterable, List, Optional, Union
 
+from .constants import SECS_IN_DAY
 from .helpers import ConstellationId, get_constellation, get_closest, get_el_az, TimeRangeHolder
-from .ephemeris import GLONASSEphemeris, GPSEphemeris, PolyEphemeris, parse_sp3_orbits, parse_rinex_nav_msg_gps, \
+from .ephemeris import EphemerisType, GLONASSEphemeris, GPSEphemeris, PolyEphemeris, parse_sp3_orbits, parse_rinex_nav_msg_gps, \
   parse_rinex_nav_msg_glonass
-from .downloader import download_orbits, download_orbits_russia, download_nav, download_ionex, download_dcb
+from .downloader import download_orbits_gps, download_orbits_russia_src, download_nav, download_ionex, download_dcb
 from .downloader import download_cors_station
 from .trop import saast
 from .iono import IonexMap, parse_ionex
@@ -20,24 +22,27 @@ class AstroDog:
   '''
   use_internet: flag indicating whether laika should fetch files from web
   cache_dir:   directory where data files are downloaded to and cached
-  pull_orbit:  flag indicating whether laika should fetch sp3 orbits
-                 instead of nav files (orbits are more accurate)
   dgps:        flag indicating whether laika should use dgps (CORS)
                data to calculate pseudorange corrections
   valid_const: list of constellation identifiers laika will try process
-
+  valid_ephem_types: set of ephemeris types that are allowed to use and download.
+                Default is set to use observation orbit ephemeris types (orbits observations are the most accurate)
   '''
 
   def __init__(self, use_internet=True,
                cache_dir='/tmp/gnss/',
-               pull_orbit=True, dgps=False,
-               valid_const=['GPS', 'GLONASS']):
+               dgps=False,
+               valid_const=('GPS', 'GLONASS'),
+               valid_ephem_types=EphemerisType.observation_orbits()):
     self.use_internet = use_internet
     self.cache_dir = cache_dir
-
     self.dgps = dgps
-    self.pull_orbit = pull_orbit
+    if not isinstance(valid_ephem_types, Iterable):
+      valid_ephem_types = [valid_ephem_types]
+    self.pull_orbit = len(set(EphemerisType.all_orbits()) & set(valid_ephem_types)) > 0
+    self.pull_nav = EphemerisType.NAV in valid_ephem_types
     self.valid_const = valid_const
+    self.valid_ephem_types = valid_ephem_types
 
     self.orbit_fetched_times = TimeRangeHolder()
     self.nav_fetched_times = TimeRangeHolder()
@@ -121,13 +126,13 @@ class AstroDog:
       self.cached_dgps = latest_data
     return latest_data
 
-  def add_ephem(self, new_ephem, ephems):
-    prn = new_ephem.prn
-    # TODO make this check work
-    # for eph in ephems[prn]:
-    #   if eph.type == new_ephem.type and eph.epoch == new_ephem.epoch:
-    #     raise RuntimeError('Trying to add an ephemeris that is already there, something is wrong')
-    ephems[prn].append(new_ephem)
+  def add_ephems(self, new_ephems, ephems):
+    for e in new_ephems:
+      # TODO make this check work
+      # for eph in ephems[prn]:
+      #   if eph.type == new_ephem.type and eph.epoch == new_ephem.epoch:
+      #     raise RuntimeError('Trying to add an ephemeris that is already there, something is wrong')
+      ephems[e.prn].append(e)
 
   def get_nav_data(self, time):
     def download_and_parse(constellation, parse_rinex_nav_func):
@@ -141,8 +146,7 @@ class AstroDog:
     if 'GLONASS' in self.valid_const:
       fetched_ephems += download_and_parse(ConstellationId.GLONASS, parse_rinex_nav_msg_glonass)
 
-    for ephem in fetched_ephems:
-      self.add_ephem(ephem, self.nav)
+    self.add_ephems(fetched_ephems, self.nav)
 
     if len(fetched_ephems) != 0:
       min_ephem = min(fetched_ephems, key=lambda e: e.epoch)
@@ -151,21 +155,30 @@ class AstroDog:
       max_epoch = max_ephem.epoch + max_ephem.max_time_diff
       self.nav_fetched_times.add(min_epoch, max_epoch)
     else:
-      begin_day = GPSTime(time.week, constants.SECS_IN_DAY * (time.tow // constants.SECS_IN_DAY))
-      end_day = GPSTime(time.week, constants.SECS_IN_DAY * (1 + (time.tow // constants.SECS_IN_DAY)))
+      begin_day = GPSTime(time.week, SECS_IN_DAY * (time.tow // SECS_IN_DAY))
+      end_day = GPSTime(time.week, SECS_IN_DAY * (1 + (time.tow // SECS_IN_DAY)))
       self.nav_fetched_times.add(begin_day, end_day)
 
-  def get_orbit_data(self, time):
-    file_paths_sp3_ru = download_orbits_russia(time, cache_dir=self.cache_dir)
-    ephems_sp3_ru = parse_sp3_orbits(file_paths_sp3_ru, self.valid_const)
-    file_paths_sp3_us = download_orbits(time, cache_dir=self.cache_dir)
-    ephems_sp3_us = parse_sp3_orbits(file_paths_sp3_us, self.valid_const)
-    ephems_sp3 = ephems_sp3_ru + ephems_sp3_us
+  def download_parse_orbit_data(self, gps_time: GPSTime, skip_before_epoch=None) -> List[PolyEphemeris]:
+    # Download multiple days to be able to polyfit at the start-end of the day
+    time_steps = [gps_time - SECS_IN_DAY, gps_time, gps_time + SECS_IN_DAY]
+    with ThreadPoolExecutor() as executor:
+      futures_other = [executor.submit(download_orbits_russia_src, t, self.cache_dir, self.valid_ephem_types) for t in time_steps]
+      futures_gps = None
+      if "GPS" in self.valid_const:
+        futures_gps = [executor.submit(download_orbits_gps, t, self.cache_dir, self.valid_ephem_types) for t in time_steps]
+
+      ephems_sp3_other = parse_sp3_orbits([f.result() for f in futures_other if f.result()], self.valid_const, skip_before_epoch)
+      ephems_sp3_us = parse_sp3_orbits([f.result() for f in futures_gps if f.result()], self.valid_const, skip_before_epoch) if futures_gps else []
+
+    return ephems_sp3_other + ephems_sp3_us
+
+  def get_orbit_data(self, time: GPSTime):
+    ephems_sp3 = self.download_parse_orbit_data(time)
     if len(ephems_sp3) < 5:
       raise RuntimeError('No orbit data found on either servers')
 
-    for ephem in ephems_sp3:
-      self.add_ephem(ephem, self.orbits)
+    self.add_ephems(ephems_sp3, self.orbits)
 
     if len(ephems_sp3) != 0:
       min_ephem = min(ephems_sp3, key=lambda e: e.epoch)
@@ -222,10 +235,10 @@ class AstroDog:
   def get_sat_info(self, prn, time):
     if get_constellation(prn) not in self.valid_const:
       return None
-
+    eph = None
     if self.pull_orbit:
       eph = self.get_orbit(prn, time)
-    else:
+    if not eph and self.pull_nav:
       eph = self.get_nav(prn, time)
 
     if eph:
@@ -233,9 +246,10 @@ class AstroDog:
     return None
 
   def get_all_sat_info(self, time):
+    ephs = {}
     if self.pull_orbit:
       ephs = self.get_orbits(time)
-    else:
+    if len(ephs) == 0 and self.pull_nav:
       ephs = self.get_navs(time)
 
     return {prn: eph.get_sat_info(time) for prn, eph in ephs.items()}
