@@ -81,7 +81,6 @@ protected:
   void drawMaxSpeed(QPainter &p);
   void drawSpeed(QPainter &p);
   void drawBottomIcons(QPainter &p);
-  void drawSpeedLimit(QPainter &p);
   void drawSteer(QPainter &p);
   void drawThermal(QPainter &p);
   void drawRestArea(QPainter &p);
