@@ -188,7 +188,7 @@ class CarController:
       # activated_hda: 0 - off, 1 - main road, 2 - highway
       if self.CP.carFingerprint in FEATURES["send_lfa_mfa"]:
         can_sends.append(hyundaican.create_lfahda_mfc(self.packer, CC.enabled, activated_hda))
-      elif CS.has_lfa_hda:
+      elif CS.has_hda:
         can_sends.append(hyundaican.create_hda_mfc(self.packer, activated_hda, CS, hud_control.leftLaneVisible, hud_control.rightLaneVisible))
 
     new_actuators = actuators.copy()
