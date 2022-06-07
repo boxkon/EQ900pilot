@@ -474,15 +474,14 @@ void NvgWindow::drawHud(QPainter &p, const cereal::ModelDataV2::Reader &model) {
   drawSteer(p);
   drawThermal(p);
   drawRestArea(p);
-  //drawTurnSignals(p);
   drawGpsStatus(p);
 
-  if(s->show_gear)
+  if(s->show_turnsignal) // boxkon
+    drawTurnSignals(p);
+  if(s->show_gear)      // boxkon
     drawCurrentGear(p);
-
-  if(s->show_engrpm)  //tenesi
+  if(s->show_engrpm)    //tenesi
     drawEngRpm(p);
-
   if(s->show_debug && width() > 1200)
     drawDebugText(p);
 

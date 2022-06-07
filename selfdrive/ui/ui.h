@@ -163,7 +163,7 @@ public:
   std::string lat_control;
 
   bool show_gear = false; //boxkon
-
+  bool show_turnsignal = false; //boxkon
   bool show_engrpm = false;  //tenesi
 
 signals:
