@@ -580,7 +580,6 @@ void NvgWindow::drawBottomIcons(QPainter &p) {
   int gap = car_state.getCruiseGap();
   bool longControl = scc_smoother.getLongControl();
   int autoTrGap = scc_smoother.getAutoTrGap();
-  x = radius / 2 + (bdr_s * 2) + (radius + 50);
 
   p.setPen(Qt::NoPen);
   p.setBrush(QBrush(QColor(0, 0, 0, 255 * .1f)));
@@ -803,6 +802,7 @@ void NvgWindow::drawMaxSpeed(QPainter &p) {
     QRect speed_rect = getRect(p, Qt::AlignCenter, str);
     QRect max_speed_rect(x_start, y_start + max_speed_height/2, board_width, max_speed_height/2);
     speed_rect.moveCenter({max_speed_rect.center().x(), 0});
+    speed_rect.moveTop(max_speed_rect.top() + 24);
     p.drawText(speed_rect, Qt::AlignCenter | Qt::AlignVCenter, str);
   }
 
