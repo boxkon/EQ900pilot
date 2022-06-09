@@ -19,10 +19,10 @@ class Proc:
   warmup: float = 3.
 
 PROCS = [
-  Proc('camerad', 2.25),
-  Proc('modeld', 0.95),
-  Proc('dmonitoringmodeld', 0.25),
-  Proc('encoderd', 0.42),
+  Proc('camerad', 2.15),
+  Proc('modeld', 1.0),
+  Proc('dmonitoringmodeld', 0.35),
+  Proc('encoderd', 0.23),
 ]
 
 
