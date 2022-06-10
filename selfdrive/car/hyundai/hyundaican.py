@@ -102,23 +102,21 @@ def create_hda_mfc(packer, active, CS, left_lane, right_lane):
     ldwSysState += 2
 
   values["HDA_LdwSysState"] = ldwSysState
+  values["HDA_USM"] = 2
   values["HDA_VSetReq"] = 100
 
   if active > 1 and CS.out.cruiseState.enabledAcc:
     values["HDA_Active"] = 0
-    values["HDA_USM"] = 2
     values["HDA_Icon_Wheel"] = 1
     values["HDA_Icon_State"] = 2
     values["HDA_Chime"] = 1
   elif active > 1 and not CS.out.cruiseState.enabledAcc:
     values["HDA_Active"] = 0
-    values["HDA_USM"] = 1
     values["HDA_Icon_Wheel"] = 0
     values["HDA_Icon_State"] = 1
     values["HDA_Chime"] = 0
   else:
     values["HDA_Active"] = 0
-    values["HDA_USM"] = 0
     values["HDA_Icon_Wheel"] = 0
     values["HDA_Icon_State"] = 0
     values["HDA_Chime"] = 0
