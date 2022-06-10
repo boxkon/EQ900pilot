@@ -55,11 +55,6 @@ class LatControlTorque(LatControl):
     self.errors = []
     self.tune = nTune(CP, self)
 
-  def reset(self):
-    super().reset()
-    self.pid.reset()
-    self.errors = []
-
   def update(self, active, CS, VM, params, last_actuators, desired_curvature, desired_curvature_rate, llk):
     self.tune.check()
     pid_log = log.ControlsState.LateralTorqueState.new_message()
@@ -79,7 +74,7 @@ class LatControlTorque(LatControl):
       desired_lateral_accel = desired_curvature * CS.vEgo ** 2
       
       # desired rate is the desired rate of change in the setpoint, not the absolute desired curvature
-      desired_lateral_jerk = desired_curvature_rate * CS.vEgo ** 2
+      #desired_lateral_jerk = desired_curvature_rate * CS.vEgo ** 2
       actual_lateral_accel = actual_curvature * CS.vEgo ** 2
 
       setpoint = desired_lateral_accel + LOW_SPEED_FACTOR * desired_curvature
@@ -100,7 +95,7 @@ class LatControlTorque(LatControl):
 
       ff = desired_lateral_accel - params.roll * ACCELERATION_DUE_TO_GRAVITY
       # convert friction into lateral accel units for feedforward
-      friction_compensation = interp(desired_lateral_jerk, [-JERK_THRESHOLD, JERK_THRESHOLD], [-self.friction, self.friction])
+      friction_compensation = interp(error, [-JERK_THRESHOLD, JERK_THRESHOLD], [-self.friction, self.friction])
       ff += friction_compensation / self.kf
       freeze_integrator = CS.steeringRateLimited or CS.steeringPressed or CS.vEgo < 5
       output_torque = self.pid.update(error_deadzone, error_rate,
