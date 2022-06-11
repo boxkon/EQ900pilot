@@ -104,3 +104,66 @@ class CarInfo:
       item += footnote_tag.format(self.all_footnotes[footnote])
 
     return item
+
+
+class Harness(Enum):
+  nidec = "Honda Nidec"
+  bosch = "Honda Bosch A"
+  toyota = "Toyota"
+  subaru = "Subaru"
+  fca = "FCA"
+  vw = "VW"
+  j533 = "J533"
+  hyundai_a = "Hyundai A"
+  hyundai_b = "Hyundai B"
+  hyundai_c = "Hyundai C"
+  hyundai_d = "Hyundai D"
+  hyundai_e = "Hyundai E"
+  hyundai_f = "Hyundai F"
+  hyundai_g = "Hyundai G"
+  hyundai_h = "Hyundai H"
+  hyundai_i = "Hyundai I"
+  hyundai_j = "Hyundai J"
+  hyundai_k = "Hyundai K"
+  hyundai_l = "Hyundai L"
+  hyundai_m = "Hyundai M"
+  hyundai_n = "Hyundai N"
+  hyundai_o = "Hyundai O"
+  custom = "Developer"
+  obd_ii = "OBD-II"
+  nissan_a = "Nissan A"
+  nissan_b = "Nissan B"
+  mazda = "Mazda"
+  none = "None"
+
+
+STAR_DESCRIPTIONS = {
+  "Gas & Brakes": {  # icon and row name
+    "openpilot Adaptive Cruise Control (ACC)": [  # star column
+      [Star.FULL.value, "openpilot is able to control the gas and brakes."],
+      [Star.HALF.value, "openpilot is able to control the gas and brakes with some restrictions."],
+      [Star.EMPTY.value, "The gas and brakes are controlled by the car's stock Adaptive Cruise Control (ACC) system."],
+    ],
+    Column.FSR_LONGITUDINAL.value: [
+      [Star.FULL.value, "Adaptive Cruise Control (ACC) operates down to 0 mph."],
+      [Star.EMPTY.value, "Adaptive Cruise Control (ACC) available only above certain speeds. See your car's manual for the minimum speed."],
+    ],
+  },
+  "Steering": {
+    Column.FSR_STEERING.value: [
+      [Star.FULL.value, "openpilot can control the steering wheel down to 0 mph."],
+      [Star.EMPTY.value, "No steering control below certain speeds."],
+    ],
+    Column.STEERING_TORQUE.value: [
+      [Star.FULL.value, "Car has enough steering torque to take tighter turns."],
+      [Star.HALF.value, "Car has enough steering torque for comfortable highway driving."],
+      [Star.EMPTY.value, "Limited ability to make turns."],
+    ],
+  },
+  "Support": {
+    Column.MAINTAINED.value: [
+      [Star.FULL.value, "Mainline software support, harness hardware sold by comma, lots of users, primary development target."],
+      [Star.EMPTY.value, "Low user count, community maintained, harness hardware not sold by comma."],
+    ],
+  },
+}
