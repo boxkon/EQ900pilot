@@ -37,9 +37,19 @@ CRUISE_INTERVAL_SIGN = {
 
 
 class MPC_COST_LAT:
-  PATH = 1.0
+  PATH = 1.2
   HEADING = 1.2
   STEER_RATE = 1.0
+
+
+def apply_deadzone(error, deadzone):
+  if error > deadzone:
+    error -= deadzone
+  elif error < - deadzone:
+    error += deadzone
+  else:
+    error = 0.
+  return error
 
 
 def rate_limit(new_value, last_value, dw_step, up_step):
