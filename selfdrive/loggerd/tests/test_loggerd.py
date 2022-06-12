@@ -18,7 +18,7 @@ from common.timeout import Timeout
 from system.hardware import TICI
 from selfdrive.loggerd.config import ROOT
 from selfdrive.manager.process_config import managed_processes
-from selfdrive.version import get_version
+from system.version import get_version
 from tools.lib.logreader import LogReader
 from cereal.visionipc import VisionIpcServer, VisionStreamType
 from common.transformations.camera import eon_f_frame_size, tici_f_frame_size, \
