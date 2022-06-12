@@ -16,17 +16,17 @@ def notcar(started: bool, params: Params, CP: car.CarParams) -> bool:
 
 procs = [
   NativeProcess("clocksd", "system/clocksd", ["./clocksd"]),
-  #NativeProcess("logcatd", "system/logcatd", ["./logcatd"]),
+  NativeProcess("logcatd", "system/logcatd", ["./logcatd"]),
   NativeProcess("proclogd", "system/proclogd", ["./proclogd"]),
   #PythonProcess("logmessaged", "system.logmessaged", offroad=True),
-  #PythonProcess("timezoned", "system.timezoned", enabled=not PC, offroad=True),
+  PythonProcess("timezoned", "system.timezoned", enabled=not PC, offroad=True),
 
   #DaemonProcess("manage_athenad", "selfdrive.athena.manage_athenad", "AthenadPid"),
 
   # due to qualcomm kernel bugs SIGKILLing camerad sometimes causes page table corruption
   NativeProcess("camerad", "selfdrive/camerad", ["./camerad"], unkillable=True, callback=driverview),
   NativeProcess("dmonitoringmodeld", "selfdrive/modeld", ["./dmonitoringmodeld"], enabled=(not PC or WEBCAM), callback=driverview),
-  #NativeProcess("encoderd", "selfdrive/loggerd", ["./encoderd"]),
+  NativeProcess("encoderd", "selfdrive/loggerd", ["./encoderd"]),
   #NativeProcess("loggerd", "selfdrive/loggerd", ["./loggerd"], onroad=False, callback=logging),
   NativeProcess("modeld", "selfdrive/modeld", ["./modeld"]),
   NativeProcess("sensord", "selfdrive/sensord", ["./sensord"], enabled=not PC),
