@@ -88,7 +88,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.init('hybrid')
 
       ret.lateralTuning.hybrid.kp = 0.3
-      ret.lateralTuning.hybrid.ki = 0.03
+      ret.lateralTuning.hybrid.ki = 0.05
       ret.lateralTuning.hybrid.kf = 0.01
       ret.lateralTuning.hybrid.kd = 0.1
 
@@ -127,7 +127,8 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.GENESIS_EQ900:
       ret.mass = 2120. + STD_CARGO_KG
       ret.wheelbase = 3.2
-      ret.centerToFront = ret.wheelbase * 0.4
+      ret.centerToFront = ret.wheelbase * 0.45
+      tire_stiffness_factor = 0.85
 
       # thanks to 파파
       ret.steerRatio = 16.5
