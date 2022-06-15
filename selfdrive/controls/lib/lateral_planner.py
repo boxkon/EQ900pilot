@@ -12,7 +12,7 @@ from cereal import log
 
 
 class LateralPlanner:
-  def __init__(self, CP, use_lanelines=True, wide_camera=False):
+  def __init__(self, use_lanelines=True, wide_camera=False):
     self.use_lanelines = use_lanelines
     self.LP = LanePlanner(wide_camera)
     self.DH = DesireHelper()
@@ -60,13 +60,13 @@ class LateralPlanner:
     if self.use_lanelines:
       d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
       d_path_xyz[:, 1] += ntune_common_get('pathOffset')
-      self.lat_mpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, ntune_common_get('steerRateCost'))
+      self.lat_mpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, MPC_COST_LAT.STEER_RATE)
     else:
       d_path_xyz = self.path_xyz
       d_path_xyz[:, 1] += ntune_common_get('pathOffset')
       # Heading cost is useful at low speed, otherwise end of plan can be off-heading
       heading_cost = interp(v_ego, [5.0, 10.0], [MPC_COST_LAT.HEADING, 0.15])
-      self.lat_mpc.set_weights(MPC_COST_LAT.PATH, heading_cost, ntune_common_get('steerRateCost'))
+      self.lat_mpc.set_weights(MPC_COST_LAT.PATH, heading_cost, MPC_COST_LAT.STEER_RATE)
 
     y_pts = np.interp(v_ego * self.t_idxs[:LAT_MPC_N + 1], np.linalg.norm(d_path_xyz, axis=1), d_path_xyz[:, 1])
     heading_pts = np.interp(v_ego * self.t_idxs[:LAT_MPC_N + 1], np.linalg.norm(self.path_xyz, axis=1), self.plan_yaw)
@@ -81,7 +81,7 @@ class LateralPlanner:
                      y_pts,
                      heading_pts)
     # init state for next
-    # mpc.u_sol is the desired curvature rate given x0 curv state. 
+    # mpc.u_sol is the desired curvature rate given x0 curv state.
     # with x0[3] = measured_curvature, this would be the actual desired rate.
     # instead, interpolate x_sol so that x0[3] is the desired curvature for lat_control.
     self.x0[3] = interp(DT_MDL, self.t_idxs[:LAT_MPC_N + 1], self.lat_mpc.x_sol[:, 3])

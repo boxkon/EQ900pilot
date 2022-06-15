@@ -92,7 +92,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.steerRatio = 16.5
     ret.steerActuatorDelay = 0.2
-    ret.steerRateCost = 0.4
+    # ret.steerRateCost = 0.4
 
     ret.steerLimitTimer = 2.5
 
@@ -131,7 +131,7 @@ class CarInterface(CarInterfaceBase):
       # thanks to 파파
       ret.steerRatio = 16.5
       ret.steerActuatorDelay = 0.2
-      ret.steerRateCost = 0.45
+      # ret.steerRateCost = 0.45
 
       if ret.lateralTuning.which() == 'torque':
         ret.lateralTuning.torque.useSteeringAngle = True
