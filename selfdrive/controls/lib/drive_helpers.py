@@ -127,6 +127,8 @@ def get_lag_adjusted_curvature(CP, v_ego, a_ego, psis, curvatures, curvature_rat
   desired_curvature_rate = curvature_rates[0]
   max_curvature_rate = (MAX_LATERAL_JERK - 2 * v_ego * a_ego * current_curvature_desired) / (v_ego**2)
   min_curvature_rate = (-MAX_LATERAL_JERK - 2 * v_ego * a_ego * current_curvature_desired) / (v_ego**2)
+  # inexact calculation, check https://github.com/commaai/openpilot/pull/24755
+  
   safe_desired_curvature_rate = clip(desired_curvature_rate,
                                           min_curvature_rate,
                                           max_curvature_rate)
