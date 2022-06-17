@@ -37,6 +37,11 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "hyundai"
     ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.hyundaiCommunity, 0)]
 
+    # These cars have been put into dashcam only due to both a lack of users and test coverage.
+    # These cars likely still work fine. Once a user confirms each car works and a test route is
+    # added to selfdrive/car/tests/routes.py, we can remove it from this list.
+    ret.dashcamOnly = candidate in HDA2_CAR
+
     tire_stiffness_factor = 1.
     ret.maxSteeringAngleDeg = 1080.
 
