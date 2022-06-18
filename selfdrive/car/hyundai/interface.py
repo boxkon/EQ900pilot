@@ -78,7 +78,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.init('torque')
 
       ret.lateralTuning.torque.useSteeringAngle = True
-      ret.lateralTuning.torque.steeringAngleDeadzoneDeg = 1.0	  
+      ret.lateralTuning.torque.steeringAngleDeadzoneDeg = 0.0	  
       max_lat_accel = 2.5
       ret.lateralTuning.torque.kp = 1.0 / max_lat_accel
       ret.lateralTuning.torque.kf = 1.0 / max_lat_accel
@@ -128,7 +128,7 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 3.01
       ret.centerToFront = ret.wheelbase * 0.4
     elif candidate == CAR.GENESIS_EQ900:
-      ret.mass = 2120. + STD_CARGO_KG
+      ret.mass = 2200. + STD_CARGO_KG
       ret.wheelbase = 3.2
       ret.centerToFront = ret.wheelbase * 0.45
       tire_stiffness_factor = 0.85
@@ -140,7 +140,7 @@ class CarInterface(CarInterfaceBase):
 
       if ret.lateralTuning.which() == 'torque':
         ret.lateralTuning.torque.useSteeringAngle = True
-        ret.lateralTuning.torque.steeringAngleDeadzoneDeg = 0.5
+        ret.lateralTuning.torque.steeringAngleDeadzoneDeg = 0.0
         max_lat_accel = 2.5
         ret.lateralTuning.torque.kp = 1.5 / max_lat_accel
         ret.lateralTuning.torque.kf = 0.7 / max_lat_accel
@@ -312,7 +312,7 @@ class CarInterface(CarInterfaceBase):
       ret.centerToFront = ret.wheelbase * 0.4
       ret.steerRatio = 17.25
     elif candidate == CAR.K9:
-      ret.mass = 2005. + STD_CARGO_KG
+      ret.mass = 2075. + STD_CARGO_KG
       ret.wheelbase = 3.15
       ret.centerToFront = ret.wheelbase * 0.4
       tire_stiffness_factor = 0.8
