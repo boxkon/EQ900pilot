@@ -1,4 +1,4 @@
-#include "selfdrive/camerad/cameras/camera_webcam.h"
+#include "system/camerad/cameras/camera_webcam.h"
 
 #include <unistd.h>
 
