@@ -509,7 +509,7 @@ void NvgWindow::drawHud(QPainter &p, const cereal::ModelDataV2::Reader &model) {
   // info
 
   p.save();
-  configFont(p, "Inter", 36, "Regular");
+  configFont(p, "Inter", 34, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff, 200));
   p.drawText(rect().left() + 20, rect().height() - 15, infoText);
   p.restore();
@@ -556,7 +556,7 @@ void NvgWindow::drawBottomIcons(QPainter &p) {
     p.setOpacity(0.8);
     p.drawPixmap(x, y, w, h, ic_tire_pressure);
 
-    configFont(p, "Inter", 40, "Bold");
+    configFont(p, "Inter", 38, "Bold");
 
     QFontMetrics fm(p.font());
     QRect rcFont = fm.boundingRect("9");
@@ -601,7 +601,7 @@ void NvgWindow::drawBottomIcons(QPainter &p) {
     textSize = 70.f;
   }
 
-  configFont(p, "Inter", 37, "Bold");
+  configFont(p, "Inter", 35, "Bold");
   drawText(p, x, y-20, "GAP", 200);
 
   configFont(p, "Inter", textSize, "Bold");
@@ -658,10 +658,10 @@ void NvgWindow::drawSpeed(QPainter &p) {
 
   QString speed;
   speed.sprintf("%.0f", cur_speed);
-  configFont(p, "Inter", 178, "Bold");
+  configFont(p, "Inter", 176, "Bold");
   drawTextWithColor(p, rect().center().x(), 230, speed, color);
 
-  configFont(p, "Inter", 68, "Regular");
+  configFont(p, "Inter", 66, "Regular");
   drawText(p, rect().center().x(), 310, s->scene.is_metric ? "km/h" : "mph", 200);
 
   p.restore();
@@ -882,7 +882,7 @@ void NvgWindow::drawSteer(QPainter &p) {
   float steer_angle = car_state.getSteeringAngleDeg();
   float desire_angle = car_control.getActuators().getSteeringAngleDeg();
 
-  configFont(p, "Inter", 52, "Bold");
+  configFont(p, "Inter", 50, "Bold");
 
   QString str;
   int width = 192;
@@ -961,7 +961,7 @@ void NvgWindow::drawThermal(QPainter &p) {
   QString str;
   QRect rect;
 
-  configFont(p, "OInter", 52, "Bold");
+  configFont(p, "Inter", 50, "Bold");
   str.sprintf("%.0f°C", cpuTemp);
   rect = QRect(x, y, w, w);
 
@@ -971,13 +971,13 @@ void NvgWindow::drawThermal(QPainter &p) {
   p.drawText(rect, Qt::AlignCenter, str);
 
   y += 55;
-  configFont(p, "Inter", 27, "Bold");
+  configFont(p, "Inter", 25, "Bold");
   rect = QRect(x, y, w, w);
   p.setPen(QColor(255, 255, 255, 200));
   p.drawText(rect, Qt::AlignCenter, "CPU");
 
   y += 80;
-  configFont(p, "Inter", 52, "Bold");
+  configFont(p, "Inter", 50, "Bold");
   str.sprintf("%.0f°C", ambientTemp);
   rect = QRect(x, y, w, w);
   r = interp<float>(ambientTemp, {35.f, 60.f}, {200.f, 255.f}, false);
@@ -986,7 +986,7 @@ void NvgWindow::drawThermal(QPainter &p) {
   p.drawText(rect, Qt::AlignCenter, str);
 
   y += 55;
-  configFont(p, "Inter", 27, "Bold");
+  configFont(p, "Inter", 25, "Bold");
   rect = QRect(x, y, w, w);
   p.setPen(QColor(255, 255, 255, 200));
   p.drawText(rect, Qt::AlignCenter, "AMBIENT");
@@ -1058,16 +1058,16 @@ void NvgWindow::drawRestAreaItem(QPainter &p, int yPos, capnp::Text::Reader imag
   int x = rc.left() + mx;
   int y = rc.top() + my;
 
-  configFont(p, "Inter", 62, "Bold");
+  configFont(p, "Inter", 60, "Bold");
   p.drawText(x, y+60+5, title.cStr());
 
   QPixmap icon = get_icon_iol_com(image.cStr());
   p.drawPixmap(x, y + box_height/2 + 5, icon_size, icon_size, icon);
 
-  configFont(p, "Inter", 52, "Bold");
+  configFont(p, "Inter", 50, "Bold");
   p.drawText(x + icon_size + 15, y + box_height/2 + 50 + 5, oilPrice.cStr());
 
-  configFont(p, "Inter", 62, "Bold");
+  configFont(p, "Inter", 60, "Bold");
 
   QFontMetrics fm(p.font());
   QRect rect = fm.boundingRect(distance.cStr());
@@ -1174,7 +1174,7 @@ void NvgWindow::drawGpsStatus(QPainter &p) {
   p.setOpacity(0.8);
   p.drawPixmap(x, y, w, h, ic_satellite);
 
-  configFont(p, "Inter", 42, "Bold");
+  configFont(p, "Inter", 40, "Bold");
   p.setPen(QColor(255, 255, 255, 200));
   p.setRenderHint(QPainter::TextAntialiasing);
 
@@ -1222,7 +1222,7 @@ void NvgWindow::drawDebugText(QPainter &p) {
 
   const char* long_state[] = {"off", "pid", "stopping", "starting"};
 
-  configFont(p, "Inter", 37, "Regular");
+  configFont(p, "Inter", 35, "Regular");
   p.setPen(QColor(255, 255, 255, 200));
   p.setRenderHint(QPainter::TextAntialiasing);
 

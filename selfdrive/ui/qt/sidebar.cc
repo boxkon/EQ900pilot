@@ -22,16 +22,9 @@ void Sidebar::drawMetric(QPainter &p, const QPair<QString, QString> &label, QCol
   p.drawRoundedRect(rect, 20, 20);
 
   p.setPen(QColor(0xff, 0xff, 0xff));
-  configFont(p, "Inter", 35, "SemiBold");
-
-  QRect label_rect = getTextRect(p, Qt::AlignCenter, label.first);
-  label_rect.setWidth(218);
-  label_rect.moveLeft(rect.left() + 22);
-  label_rect.moveTop(rect.top() + 19);
-  p.drawText(label_rect, Qt::AlignCenter, label.first);
-
-  label_rect.moveTop(rect.top() + 65);
-  p.drawText(label_rect, Qt::AlignCenter, label.second);
+  configFont(p, "Inter", 35, "Bold");
+  const QRect r = QRect(rect.x() + 30, rect.y(), rect.width() - 40, rect.height());
+  p.drawText(r, Qt::AlignCenter, label);
 }
 
 Sidebar::Sidebar(QWidget *parent) : QFrame(parent) {
@@ -113,7 +106,7 @@ void Sidebar::paintEvent(QPaintEvent *event) {
     x += 37;
   }
 
-  configFont(p, "Inter", 35, "Regular");
+  configFont(p, "Inter", 30, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff));
 
   const QRect r = QRect(0, 247, event->rect().width(), 50);
