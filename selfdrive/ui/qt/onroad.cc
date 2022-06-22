@@ -3,8 +3,6 @@
 #include <cmath>
 
 #include <QDebug>
-#include <QString>
-
 #include <QSound>
 #include <QMouseEvent>
 
@@ -31,8 +29,6 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   split = new QHBoxLayout(split_wrapper);
   split->setContentsMargins(0, 0, 0, 0);
   split->setSpacing(0);
-  split->addWidget(nvg);
-
   split->addLayout(road_view_layout);
 
   stacked_layout->addWidget(split_wrapper);
@@ -303,25 +299,7 @@ void NvgWindow::drawLaneLines(QPainter &painter, const UIState *s) {
 
   // paint path
   QLinearGradient bg(0, height(), 0, height() / 4);
-  // wirelessnet2's rainbow barf path
-  if (scene.engaged && !scene.end_to_end) {
-    // openpilot is not disengaged
-    if (scene.steeringPressed) {
-      // The user is applying torque to the steering wheel
-      bg.setColorAt(0, steeringpressedColor(200));
-      bg.setColorAt(1, steeringpressedColor(0));
-    } else if (scene.override) {
-      bg.setColorAt(0, overrideColor(200));
-      bg.setColorAt(1, overrideColor(0));
-    } else {
-      // Draw colored track
-      int torqueScale = (int)std::fabs(510 * (float)scene.output_scale);
-      int red_lvl = std::fmin(255, torqueScale);
-      int green_lvl = std::fmin(255, 510 - torqueScale);
-      bg.setColorAt(0, QColor(red_lvl, green_lvl, 0, 200));
-      bg.setColorAt(1, QColor((int)(0.5 * red_lvl), (int)(0.5 * green_lvl), 0, 50));
-    }
-  } else if (scene.engaged && scene.end_to_end) {
+  if (scene.engaged) {
     const auto &orientation = (*s->sm)["modelV2"].getModelV2().getOrientation();
     float orientation_future = 0;
     if (orientation.getZ().size() > 16) {
@@ -335,10 +313,10 @@ void NvgWindow::drawLaneLines(QPainter &painter, const UIState *s) {
     if (scene.steeringPressed) {
       // The user is applying torque to the steering wheel
       bg.setColorAt(0, steeringpressedColor(200));
-      bg.setColorAt(1, steeringpressedColor(0));
+      bg.setColorAt(1, QColor(0, 95, 128, 50));
     } else if (scene.override) {
       bg.setColorAt(0, overrideColor(200));
-      bg.setColorAt(1, overrideColor(0));
+      bg.setColorAt(1, QColor(72, 77, 74, 50));
     } else {
       bg.setColorAt(0.0, QColor::fromHslF(148 / 360., 0.94, 0.51, 0.4));
       bg.setColorAt(0.75 / 1.5, QColor::fromHslF(curve_hue / 360., 1.0, 0.68, 0.35));
@@ -378,7 +356,7 @@ void NvgWindow::drawLead(QPainter &painter, const cereal::ModelDataV2::LeadDataV
   float g_yo = sz / 10;
 
   QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
-  painter.setBrush(is_radar ? orangeColor() : pinkColor());
+  painter.setBrush(is_radar ? QColor(86, 121, 216, 255) : QColor(218, 202, 37, 255));
   painter.drawPolygon(glow, std::size(glow));
 
   // chevron
