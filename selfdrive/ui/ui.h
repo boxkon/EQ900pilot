@@ -97,6 +97,7 @@ typedef struct UIScene {
   cereal::PandaState::PandaType pandaType;
 
   // ui add
+  float output_scale;
   bool steeringPressed, engaged, override;
 
   // Brake on SPD
