@@ -99,7 +99,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.2
     # ret.steerRateCost = 0.4
 
-    ret.steerLimitTimer = 2.5
+    ret.steerLimitTimer = 1.0
 
     # longitudinal
     ret.longitudinalTuning.kpBP = [0., 5.*CV.KPH_TO_MS, 10.*CV.KPH_TO_MS, 30.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
@@ -131,11 +131,11 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 2200. + STD_CARGO_KG
       ret.wheelbase = 3.2
       ret.centerToFront = ret.wheelbase * 0.45
-      tire_stiffness_factor = 0.85
+      tire_stiffness_factor = 0.8
 
       # thanks to 파파
       ret.steerRatio = 16.5
-      ret.steerActuatorDelay = 0.2
+      ret.steerActuatorDelay = 0.05
       # ret.steerRateCost = 0.45
 
       if ret.lateralTuning.which() == 'torque':
