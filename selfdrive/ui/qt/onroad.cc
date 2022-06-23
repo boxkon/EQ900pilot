@@ -1287,7 +1287,7 @@ void NvgWindow::drawCurrentGear(QPainter &p) {
   int gearShifter = (int)car_state.getGearShifter();
   float textSize = 25 * 7.f;
 
-  QRect rc(230, 30, 184, 202);
+  QRect rc(240, 40, 184, 202);
   p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 10));
   p.setBrush(QColor(0, 0, 0, 100));
   p.drawRoundedRect(rc, 20, 20);
@@ -1333,7 +1333,7 @@ void NvgWindow::drawEngRpm(QPainter &p) {
   rpm.sprintf("%.0f", eng_rpm); // 문자변수에 포맷을 지정해서 저장.
   configFont(p, "Inter", textSize_2, "Regular");
 
-  QRect rc(230, 232, 184, 202);
+  QRect rc(240, 242, 184, 202);
   p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 10));
   p.setBrush(QColor(0, 0, 0, 100));
   p.drawRoundedRect(rc, 20, 20);
