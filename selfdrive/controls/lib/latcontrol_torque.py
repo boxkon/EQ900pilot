@@ -67,6 +67,7 @@ class LatControlTorque(LatControl):
       setpoint = desired_lateral_accel + low_speed_factor * desired_curvature
       measurement = actual_lateral_accel + low_speed_factor * actual_curvature
       error = setpoint - measurement
+      pid_log.error = error
 
       error_rate = 0
       if len(self.errors) >= ERROR_RATE_FRAME:
@@ -74,8 +75,6 @@ class LatControlTorque(LatControl):
       self.errors.append(float(error))
       while len(self.errors) > ERROR_RATE_FRAME:
         self.errors.pop(0)
-
-      pid_log.error = error
 
       ff = desired_lateral_accel - params.roll * ACCELERATION_DUE_TO_GRAVITY
       # convert friction into lateral accel units for feedforward
