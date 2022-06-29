@@ -1,9 +1,9 @@
-const int HYUNDAI_HDA2_MAX_STEER = 409;
+const int HYUNDAI_HDA2_MAX_STEER = 270;
 const int HYUNDAI_HDA2_MAX_RT_DELTA = 112;          // max delta torque allowed for real time checks
 const uint32_t HYUNDAI_HDA2_RT_INTERVAL = 250000;   // 250ms between real time checks
 const int HYUNDAI_HDA2_MAX_RATE_UP = 3;
 const int HYUNDAI_HDA2_MAX_RATE_DOWN = 7;
-const int HYUNDAI_HDA2_DRIVER_TORQUE_ALLOWANCE = 50;
+const int HYUNDAI_HDA2_DRIVER_TORQUE_ALLOWANCE = 250;
 const int HYUNDAI_HDA2_DRIVER_TORQUE_FACTOR = 2;
 const uint32_t HYUNDAI_HDA2_STANDSTILL_THRSLD = 30;  // ~1kph
 
@@ -92,13 +92,13 @@ static int hyundai_hda2_rx_hook(CANPacket_t *to_push) {
       cruise_engaged_prev = cruise_engaged;
     }
 
-    /*if (addr == 0x35) {
+    if (addr == 0x35) {
       gas_pressed = GET_BYTE(to_push, 5) != 0U;
     }
 
     if (addr == 0x65) {
       brake_pressed = GET_BIT(to_push, 57U) != 0U;
-    }*/
+    }
 
     if (addr == 0xa0) {
       uint32_t speed = 0;
