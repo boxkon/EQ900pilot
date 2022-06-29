@@ -19,8 +19,8 @@ class CarControllerParams:
       self.STEER_MAX = 409
 
     if CP.lateralTuning == 'torque':
-      self.STEER_DELTA_UP = 5
-      self.STEER_DELTA_DOWN = 8
+      self.STEER_DELTA_UP = 4
+      self.STEER_DELTA_DOWN = 7
     else:
       self.STEER_DELTA_UP = 3
       self.STEER_DELTA_DOWN = 5
