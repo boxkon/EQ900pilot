@@ -304,6 +304,10 @@ jobs:
                         $UNIT_TEST selfdrive/thermald && \
                         $UNIT_TEST system/hardware/tici && \
                         $UNIT_TEST tools/lib/tests && \
+                        ./selfdrive/ui/tests/create_test_translations.sh && \
+                        QT_QPA_PLATFORM=offscreen ./selfdrive/ui/tests/test_translations && \
+                        ./common/tests/test_util && \
+                        ./common/tests/test_swaglog && \
                         ./selfdrive/boardd/tests/test_boardd_usbprotocol && \
                         ./selfdrive/common/tests/test_util && \
                         ./selfdrive/common/tests/test_swaglog && \
@@ -364,8 +368,6 @@ jobs:
                         CI=1 AZURE_TOKEN='$AZURE_TOKEN' python selfdrive/test/process_replay/test_processes.py -j$(nproc) --upload-only"
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v2
-<<<<<<< HEAD
-=======
 
   model_replay_onnx:
     name: model replay onnx
@@ -404,7 +406,6 @@ jobs:
                             ONNXCPU=1 FILEREADER_CACHE=1 CI=1 coverage run \
                             selfdrive/test/process_replay/model_replay.py -j$(nproc) && \
                             coverage xml"
->>>>>>> b95e68778 (split locationd and liblocationd tests (#24977))
 
   test_longitudinal:
     name: longitudinal
