@@ -373,9 +373,6 @@ DBC = {
   CAR.EV6: dbc_dict('kia_ev6', None),
 }
 
-STEER_THRESHOLD = 150
-
-
 
 
 def main():
