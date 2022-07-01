@@ -595,7 +595,7 @@ struct ControlsState @0x97ff69c53601abf1 {
     angleState @58 :LateralAngleState;
     debugState @59 :LateralDebugState;
     torqueState @60 :LateralTorqueState;
-    hybridState @76 :LateralHybridState;
+    hybridState @75 :LateralHybridState;
   }
 
   angleSteers @63 :Float32;
