@@ -49,7 +49,7 @@ class CarInfo:
   footnotes: Optional[List[Enum]] = None
   min_steer_speed: Optional[float] = None
   min_enable_speed: Optional[float] = None
-  good_torque: bool = False
+  harness: Optional[Enum] = None
 
   def init(self, CP: car.CarParams, non_tested_cars: List[str], all_footnotes: Dict[Enum, int]):
     # TODO: set all the min steer speeds in carParams and remove this
@@ -70,12 +70,21 @@ class CarInfo:
       Column.MODEL: self.model,
       Column.PACKAGE: self.package,
       # StarColumns
-      Column.LONGITUDINAL: CP.openpilotLongitudinalControl and not CP.radarOffCan,
-      Column.FSR_LONGITUDINAL: min_enable_speed <= 0.,
-      Column.FSR_STEERING: min_steer_speed <= 0.,
-      Column.STEERING_TORQUE: self.good_torque,
-      Column.MAINTAINED: CP.carFingerprint not in non_tested_cars,
+      Column.LONGITUDINAL: Star.FULL if CP.openpilotLongitudinalControl and not CP.radarOffCan else Star.EMPTY,
+      Column.FSR_LONGITUDINAL: Star.FULL if min_enable_speed <= 0. else Star.EMPTY,
+      Column.FSR_STEERING: Star.FULL if min_steer_speed <= 0. else Star.EMPTY,
+      # Column.STEERING_TORQUE set below
+      Column.MAINTAINED: Star.FULL if CP.carFingerprint not in non_tested_cars and self.harness is not Harness.none else Star.EMPTY,
     }
+
+    # Set steering torque star from max lateral acceleration
+    if not math.isnan(CP.maxLateralAccel):
+      if CP.maxLateralAccel >= GREAT_TORQUE_THRESHOLD:
+        self.row[Column.STEERING_TORQUE] = Star.FULL
+      elif CP.maxLateralAccel >= GOOD_TORQUE_THRESHOLD:
+        self.row[Column.STEERING_TORQUE] = Star.HALF
+      else:
+        self.row[Column.STEERING_TORQUE] = Star.EMPTY
 
     if CP.notCar:
       for col in StarColumns:
