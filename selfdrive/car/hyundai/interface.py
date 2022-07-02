@@ -14,6 +14,16 @@ GearShifter = car.CarState.GearShifter
 EventName = car.CarEvent.EventName
 ButtonType = car.CarState.ButtonEvent.Type
 
+def torque_tune(tune, max_lat_accel=2.5, friction=0.01, kd=0.0, steering_angle_deadzone_deg=0.0):
+  tune.init('torque')
+  tune.torque.useSteeringAngle = True
+  tune.torque.kp = 1.0 / max_lat_accel
+  tune.torque.kf = 1.0 / max_lat_accel
+  tune.torque.ki = 0.1 / max_lat_accel
+  tune.torque.friction = friction
+  tune.torque.steeringAngleDeadzoneDeg = steering_angle_deadzone_deg
+  tune.torque.kd = kd
+
 class CarInterface(CarInterfaceBase):
   def __init__(self, CP, CarController, CarState):
     super().__init__(CP, CarController, CarState)
@@ -74,26 +84,15 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.lqr.c = [1., 0.]
       ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
       ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
-    elif lateral_control == 'TORQUE':
-      ret.lateralTuning.init('torque')
-
-      ret.lateralTuning.torque.useSteeringAngle = True
-      ret.lateralTuning.torque.steeringAngleDeadzoneDeg = 0.0	  
-      max_lat_accel = 2.5
-      ret.lateralTuning.torque.kp = 1.0 / max_lat_accel
-      ret.lateralTuning.torque.kf = 1.0 / max_lat_accel
-      ret.lateralTuning.torque.ki = 0.2 / max_lat_accel
-      ret.lateralTuning.torque.friction = 0.0
-
-      ret.lateralTuning.torque.kd = 1.0
-      ret.lateralTuning.torque.deadzone = 0.01
-    else:
+    elif lateral_control == 'HYBRID':
       ret.lateralTuning.init('hybrid')
 
       ret.lateralTuning.hybrid.kp = 0.3
       ret.lateralTuning.hybrid.ki = 0.01
       ret.lateralTuning.hybrid.kf = 0.0005
       ret.lateralTuning.hybrid.kd = 0.5
+    else:
+      torque_tune(ret.lateralTuning, 2.5, 0.01)
 
     ret.steerRatio = 16.5
     ret.steerActuatorDelay = 0.2
@@ -137,13 +136,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerActuatorDelay = 0.05
 
       if ret.lateralTuning.which() == 'torque':
-        ret.lateralTuning.torque.useSteeringAngle = True
-        max_lat_accel = 2.5
-        ret.lateralTuning.torque.kp = 1.0 / max_lat_accel
-        ret.lateralTuning.torque.kf = 1.0 / max_lat_accel
-        ret.lateralTuning.torque.ki = 0.1 / max_lat_accel
-        ret.lateralTuning.torque.friction = 0.01
-        ret.lateralTuning.torque.kd = 0.0
+        torque_tune(ret.lateralTuning, 3.0, 0.01)
 
     elif candidate == CAR.GENESIS_EQ900_L:
       ret.mass = 2290
@@ -186,13 +179,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerActuatorDelay = 0.075
 
       if ret.lateralTuning.which() == 'torque':
-        ret.lateralTuning.torque.useSteeringAngle = True
-        max_lat_accel = 2.3
-        ret.lateralTuning.torque.kp = 1.0 / max_lat_accel
-        ret.lateralTuning.torque.kf = 1.0 / max_lat_accel
-        ret.lateralTuning.torque.ki = 0.1 / max_lat_accel
-        ret.lateralTuning.torque.friction = 0.0
-        ret.lateralTuning.torque.kd = 0.1
+        torque_tune(ret.lateralTuning, 2.3, 0.01)
 
     elif candidate in [CAR.ELANTRA, CAR.ELANTRA_GT_I30]:
       ret.mass = 1275. + STD_CARGO_KG
@@ -316,13 +303,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 14.5
 
       if ret.lateralTuning.which() == 'torque':
-        ret.lateralTuning.torque.useSteeringAngle = True
-        max_lat_accel = 2.5
-        ret.lateralTuning.torque.kp = 1.0 / max_lat_accel
-        ret.lateralTuning.torque.kf = 1.0 / max_lat_accel
-        ret.lateralTuning.torque.ki = 0.1 / max_lat_accel
-        ret.lateralTuning.torque.friction = 0.01
-        ret.lateralTuning.torque.kd = 0.0
+        torque_tune(ret.lateralTuning, 2.3, 0.01)
 
     elif candidate == CAR.EV6:
       ret.mass = 2055 + STD_CARGO_KG
@@ -337,9 +318,9 @@ class CarInterface(CarInterfaceBase):
         max_lat_accel = 2.5
         ret.lateralTuning.torque.kp = 1.0 / max_lat_accel
         ret.lateralTuning.torque.kf = 1.0 / max_lat_accel
-        ret.lateralTuning.torque.ki = 0.2 / max_lat_accel
+        ret.lateralTuning.torque.ki = 0.1 / max_lat_accel
         ret.lateralTuning.torque.friction = 0.0
-        ret.lateralTuning.torque.kd = 1.0
+        ret.lateralTuning.torque.kd = 0.0
 
 
     ret.radarTimeStep = 0.05
