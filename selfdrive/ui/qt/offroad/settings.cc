@@ -341,30 +341,6 @@ void SoftwarePanel::updateLabels() {
   osVersionLbl->setText(QString::fromStdString(Hardware::get_os_version()).trimmed());
 }
 
-QWidget *network_panel(QWidget *parent) {
-  return new Networking(parent);
-}
-
-static QStringList get_list(const char* path)
-{
-  QStringList stringList;
-  QFile textFile(path);
-  if(textFile.open(QIODevice::ReadOnly))
-  {
-      QTextStream textStream(&textFile);
-      while (true)
-      {
-        QString line = textStream.readLine();
-        if (line.isNull())
-            break;
-        else
-            stringList.append(line);
-      }
-  }
-
-  return stringList;
-}
-
 void SettingsWindow::showEvent(QShowEvent *event) {
   panel_widget->setCurrentIndex(0);
   nav_btns->buttons()[0]->setChecked(true);
@@ -413,7 +389,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
 
   QList<QPair<QString, QWidget *>> panels = {
     {tr("Device"), device},
-    {tr("Network"), network_panel(this)},
+    {tr("Network"), new Networking(this)},
     {tr("Toggles"), new TogglesPanel(this)},
     {tr("Software"), new SoftwarePanel(this)},
     {tr("Community"), new CommunityPanel(this)},
