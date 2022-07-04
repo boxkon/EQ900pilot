@@ -32,11 +32,16 @@ private:
 // container window for the NVG UI
 class NvgWindow : public CameraViewWidget {
   Q_OBJECT
+  Q_PROPERTY(bool left_blindspot MEMBER left_blindspot);
+  Q_PROPERTY(bool right_blindspot MEMBER right_blindspot);
 
 public:
   explicit NvgWindow(VisionStreamType type, QWidget* parent = 0);
   void updateState(const UIState &s);
 
+private:
+  bool left_blindspot = false;
+  bool right_blindspot = false;
 protected:
   void paintGL() override;
   void initializeGL() override;
