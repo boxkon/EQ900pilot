@@ -341,10 +341,6 @@ void SoftwarePanel::updateLabels() {
   osVersionLbl->setText(QString::fromStdString(Hardware::get_os_version()).trimmed());
 }
 
-QWidget *network_panel(QWidget *parent) {
-  return new Networking(parent);
-}
-
 static QStringList get_list(const char* path)
 {
   QStringList stringList;
