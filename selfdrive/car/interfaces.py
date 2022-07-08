@@ -123,7 +123,7 @@ class CarInterfaceBase(ABC):
     ret.vEgoStarting = 0.5
     ret.stoppingControl = True
     ret.longitudinalTuning.deadzoneBP = [0.]
-    ret.longitudinalTuning.deadzoneV = [0.001]
+    ret.longitudinalTuning.deadzoneV = [0.]
     ret.longitudinalTuning.kf = 1.
     ret.longitudinalTuning.kpBP = [0.]
     ret.longitudinalTuning.kpV = [1.]

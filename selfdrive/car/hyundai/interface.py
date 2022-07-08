@@ -47,11 +47,6 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "hyundai"
     ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.hyundaiCommunity, 0)]
 
-    # These cars have been put into dashcam only due to both a lack of users and test coverage.
-    # These cars likely still work fine. Once a user confirms each car works and a test route is
-    # added to selfdrive/car/tests/routes.py, we can remove it from this list.
-    ret.dashcamOnly = candidate in HDA2_CAR
-
     tire_stiffness_factor = 1.
     ret.maxSteeringAngleDeg = 1080.
 
@@ -366,12 +361,6 @@ class CarInterface(CarInterfaceBase):
       ret.radarOffCan = ret.sccBus == -1
 
     ret.pcmCruise = not ret.radarOffCan
-
-    # Detect smartMDPS: the smartMDPS allows openpilot to continue lateral actuation past the lateral low speed lockout by intercepting CF_Clu_Vanz from the MDPS
-    smartMdps = 0x2AA in fingerprint[0]
-    # If the smartMDPS is detected, openpilot can send lateral actuation when lower than minSteerSpeed without faulting
-    if smartMdps:
-      ret.minSteerSpeed = 0
 
     return ret
 

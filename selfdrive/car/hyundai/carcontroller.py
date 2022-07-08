@@ -1,22 +1,20 @@
 from random import randint
 
 from cereal import car
-from common.conversions import Conversions as CV
-from common.numpy_fast import clip, interp
 from common.realtime import DT_CTRL
-from opendbc.can.packer import CANPacker
+from common.numpy_fast import clip, interp
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai import hyundaican, hda2can
 from selfdrive.car.hyundai.scc_smoother import SccSmoother
 from selfdrive.car.hyundai.values import Buttons, HDA2_CAR, CAR, FEATURES, CarControllerParams
 from opendbc.can.packer import CANPacker
+from common.conversions import Conversions as CV
 from common.params import Params
 from selfdrive.controls.lib.longcontrol import LongCtrlState
 from selfdrive.road_speed_limiter import road_speed_limiter_get_active
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 min_set_speed = 30 * CV.KPH_TO_MS
-
 
 def process_hud_alert(enabled, fingerprint, hud_control):
 
