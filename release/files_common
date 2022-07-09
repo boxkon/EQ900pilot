@@ -233,6 +233,7 @@ selfdrive/locationd/models/gnss_helpers.py
 
 selfdrive/locationd/calibrationd.py
 
+system/logcatd/.gitignore
 system/logcatd/SConscript
 system/logcatd/logcatd_systemd.cc
 
@@ -241,6 +242,7 @@ system/proclogd/main.cc
 system/proclogd/proclog.cc
 system/proclogd/proclog.h
 
+selfdrive/loggerd/.gitignore
 selfdrive/loggerd/SConscript
 selfdrive/loggerd/encoder/encoder.cc
 selfdrive/loggerd/encoder/encoder.h
@@ -416,6 +418,7 @@ scripts/stop_updater.sh
 pyextra/.gitignore
 pyextra/acados_template/**
 
+rednose/.gitignore
 rednose/**
 laika/**
 
