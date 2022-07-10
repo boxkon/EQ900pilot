@@ -67,25 +67,6 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.indi.timeConstantV = [1.4]
       ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
       ret.lateralTuning.indi.actuatorEffectivenessV = [1.8]
-    elif lateral_control == 'LQR':
-      ret.lateralTuning.init('lqr')
-
-      ret.lateralTuning.lqr.scale = 1650.
-      ret.lateralTuning.lqr.ki = 0.01
-      ret.lateralTuning.lqr.dcGain = 0.0027
-
-      ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
-      ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
-      ret.lateralTuning.lqr.c = [1., 0.]
-      ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
-      ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
-    elif lateral_control == 'HYBRID':
-      ret.lateralTuning.init('hybrid')
-
-      ret.lateralTuning.hybrid.kp = 0.3
-      ret.lateralTuning.hybrid.ki = 0.01
-      ret.lateralTuning.hybrid.kf = 0.0005
-      ret.lateralTuning.hybrid.kd = 0.5
     else:
       torque_tune(ret.lateralTuning, 2.5, 0.01)
 
