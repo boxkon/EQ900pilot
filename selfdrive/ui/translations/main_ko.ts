@@ -886,8 +886,8 @@ location set</source>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="314"/>
-        <source>Uninstall </source>
-        <translation>제거</translation>
+        <source>Uninstall openpilot</source>
+        <translation>openpilot 제거</translation>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="314"/>
