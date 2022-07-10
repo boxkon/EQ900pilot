@@ -224,15 +224,6 @@ def build_fw_dict(fw_versions, filter_brand=None):
   return fw_versions_dict
 
 
-def get_brand_addrs():
-  versions = get_interface_attr('FW_VERSIONS', ignore_none=True)
-  brand_addrs = defaultdict(set)
-  for brand, cars in versions.items():
-    for fw in cars.values():
-      brand_addrs[brand] |= {(addr, sub_addr) for _, addr, sub_addr in fw.keys()}
-  return brand_addrs
-
-
 def match_fw_to_car_fuzzy(fw_versions_dict, log=True, exclude=None):
   """Do a fuzzy FW match. This function will return a match, and the number of firmware version
   that were matched uniquely to that specific car. If multiple ECUs uniquely match to different cars
@@ -244,7 +235,7 @@ def match_fw_to_car_fuzzy(fw_versions_dict, log=True, exclude=None):
   # time and only one is in our database.
   exclude_types = [Ecu.fwdCamera, Ecu.fwdRadar, Ecu.eps, Ecu.debug]
 
-  # Build lookup table from (addr, sub_addr, fw) to list of candidate cars
+  # Build lookup table from (addr, subaddr, fw) to list of candidate cars
   all_fw_versions = defaultdict(list)
   for candidate, fw_by_addr in FW_VERSIONS.items():
     if candidate == exclude:
@@ -369,59 +360,24 @@ def get_present_ecus(logcan, sendcan):
   return ecu_responses
 
 
-def get_brand_ecu_matches(ecu_rx_addrs):
-  """Returns dictionary of brands and matches with ECUs in their FW versions"""
-
-  brand_addrs = get_brand_addrs()
-  brand_matches = {r.brand: set() for r in REQUESTS}
-
-  brand_rx_offsets = set((r.brand, r.rx_offset) for r in REQUESTS)
-  for addr, sub_addr, _ in ecu_rx_addrs:
-    # Since we can't know what request an ecu responded to, add matches for all possible rx offsets
-    for brand, rx_offset in brand_rx_offsets:
-      a = (uds.get_rx_addr_for_tx_addr(addr, -rx_offset), sub_addr)
-      if a in brand_addrs[brand]:
-        brand_matches[brand].add(a)
-
-  return brand_matches
-
-
-def get_fw_versions_ordered(logcan, sendcan, ecu_rx_addrs, timeout=0.1, debug=False, progress=False):
-  """Queries for FW versions ordering brands by likelihood, breaks when exact match is found"""
-
-  all_car_fw = []
-  brand_matches = get_brand_ecu_matches(ecu_rx_addrs)
-
-  for brand in sorted(brand_matches, key=lambda b: len(brand_matches[b]), reverse=True):
-    car_fw = get_fw_versions(logcan, sendcan, brand=brand, timeout=timeout, debug=debug, progress=progress)
-    all_car_fw.extend(car_fw)
-    matches = match_fw_to_car_exact(build_fw_dict(car_fw))
-    if len(matches) == 1:
-      break
-
-  return all_car_fw
-
-
-def get_fw_versions(logcan, sendcan, brand=None, extra=None, timeout=0.1, debug=False, progress=False):
-  versions = get_interface_attr('FW_VERSIONS', ignore_none=True)
-  if brand is not None:
-    versions = {brand: versions[brand]}
-
-  if extra is not None:
-    versions.update(extra)
+def get_fw_versions(logcan, sendcan, extra=None, timeout=0.1, debug=False, progress=False):
+  ecu_types = {}
 
   # Extract ECU addresses to query from fingerprints
   # ECUs using a subaddress need be queried one by one, the rest can be done in parallel
   addrs = []
   parallel_addrs = []
-  ecu_types = {}
+
+  versions = get_interface_attr('FW_VERSIONS', ignore_none=True)
+  if extra is not None:
+    versions.update(extra)
 
   for brand, brand_versions in versions.items():
     for c in brand_versions.values():
       for ecu_type, addr, sub_addr in c.keys():
         a = (brand, addr, sub_addr)
         if a not in ecu_types:
-          ecu_types[a] = ecu_type
+          ecu_types[(addr, sub_addr)] = ecu_type
 
         if sub_addr is None:
           if a not in parallel_addrs:
@@ -433,17 +389,17 @@ def get_fw_versions(logcan, sendcan, brand=None, extra=None, timeout=0.1, debug=
   addrs.insert(0, parallel_addrs)
 
   fw_versions = {}
-  requests = [r for r in REQUESTS if brand is None or r.brand == brand]
-  for addr in tqdm(addrs, disable=not progress):
+  for i, addr in enumerate(tqdm(addrs, disable=not progress)):
     for addr_chunk in chunks(addr):
-      for r in requests:
+      for r in REQUESTS:
         try:
           addrs = [(a, s) for (b, a, s) in addr_chunk if b in (r.brand, 'any') and
-                   (len(r.whitelist_ecus) == 0 or ecu_types[(b, a, s)] in r.whitelist_ecus)]
+                   (len(r.whitelist_ecus) == 0 or ecu_types[(a, s)] in r.whitelist_ecus)]
 
           if addrs:
             query = IsoTpParallelQuery(sendcan, logcan, r.bus, addrs, r.request, r.response, r.rx_offset, debug=debug)
-            fw_versions.update({(r.brand, addr): (version, r) for addr, version in query.get_data(timeout).items()})
+            t = 2 * timeout if i == 0 else timeout
+            fw_versions.update({(r.brand, addr): (version, r) for addr, version in query.get_data(t).items()})
         except Exception:
           cloudlog.warning(f"FW query exception: {traceback.format_exc()}")
 
@@ -452,7 +408,7 @@ def get_fw_versions(logcan, sendcan, brand=None, extra=None, timeout=0.1, debug=
   for (brand, addr), (version, request) in fw_versions.items():
     f = car.CarParams.CarFw.new_message()
 
-    f.ecu = ecu_types[(brand, addr[0], addr[1])]
+    f.ecu = ecu_types[addr]
     f.fwVersion = version
     f.address = addr[0]
     f.responseAddress = uds.get_rx_addr_for_tx_addr(addr[0], request.rx_offset)
@@ -476,7 +432,6 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Get firmware version of ECUs')
   parser.add_argument('--scan', action='store_true')
   parser.add_argument('--debug', action='store_true')
-  parser.add_argument('--brand', help='Only query addresses/with requests for this brand')
   args = parser.parse_args()
 
   logcan = messaging.sub_sock('can')
@@ -502,7 +457,7 @@ if __name__ == "__main__":
   print()
 
   t = time.time()
-  fw_vers = get_fw_versions(logcan, sendcan, brand=args.brand, extra=extra, debug=args.debug, progress=True)
+  fw_vers = get_fw_versions(logcan, sendcan, extra=extra, debug=args.debug, progress=True)
   _, candidates = match_fw_to_car(fw_vers)
 
   print()
