@@ -470,6 +470,80 @@ openpilot은 계속해서 캘리브레이션을 수행합니다.
     </message>
 </context>
 <context>
+    <name>Installer</name>
+    <message>
+        <location filename="../installer/installer.cc" line="56"/>
+        <source>Installing...</source>
+        <translation>설치중...</translation>
+    </message>
+    <message>
+        <location filename="../installer/installer.cc" line="144"/>
+        <source>Receiving objects: </source>
+        <translation>수신중： </translation>
+    </message>
+    <message>
+        <location filename="../installer/installer.cc" line="145"/>
+        <source>Resolving deltas: </source>
+        <translation>델타병합： </translation>
+    </message>
+    <message>
+        <location filename="../installer/installer.cc" line="146"/>
+        <source>Updating files: </source>
+        <translation>파일갱신： </translation>
+    </message>
+</context>
+<context>
+    <name>MapETA</name>
+    <message>
+        <location filename="../qt/maps/map.cc" line="622"/>
+        <source>eta</source>
+        <translation>도착</translation>
+    </message>
+    <message>
+        <location filename="../qt/maps/map.cc" line="632"/>
+        <source>min</source>
+        <translation>분</translation>
+    </message>
+    <message>
+        <location filename="../qt/maps/map.cc" line="636"/>
+        <source>hr</source>
+        <translation>시간</translation>
+    </message>
+    <message>
+        <location filename="../qt/maps/map.cc" line="656"/>
+        <source>km</source>
+        <translation>km</translation>
+    </message>
+    <message>
+        <location filename="../qt/maps/map.cc" line="659"/>
+        <source>mi</source>
+        <translation>mi</translation>
+    </message>
+</context>
+<context>
+    <name>MapInstructions</name>
+    <message>
+        <location filename="../qt/maps/map.cc" line="421"/>
+        <source> km</source>
+        <translation> km</translation>
+    </message>
+    <message>
+        <location filename="../qt/maps/map.cc" line="424"/>
+        <source> m</source>
+        <translation> m</translation>
+    </message>
+    <message>
+        <location filename="../qt/maps/map.cc" line="432"/>
+        <source> mi</source>
+        <translation> mi</translation>
+    </message>
+    <message>
+        <location filename="../qt/maps/map.cc" line="435"/>
+        <source> ft</source>
+        <translation> ft</translation>
+    </message>
+</context>
+<context>
     <name>MapPanel</name>
     <message>
         <location filename="../qt/maps/map_settings.cc" line="62"/>
