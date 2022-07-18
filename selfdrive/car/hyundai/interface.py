@@ -92,7 +92,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerRatio = 16.5
     ret.steerActuatorDelay = 0.2
 
-    ret.steerLimitTimer = 1.0
+    ret.steerLimitTimer = 3.0
 
     # longitudinal
     ret.longitudinalTuning.kpBP = [0., 5.*CV.KPH_TO_MS, 10.*CV.KPH_TO_MS, 30.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
@@ -128,10 +128,10 @@ class CarInterface(CarInterfaceBase):
 
       # thanks to 파파
       ret.steerRatio = 16.5
-      ret.steerActuatorDelay = 0.05
+      ret.steerActuatorDelay = 0.2
 
       if ret.lateralTuning.which() == 'torque':
-        torque_tune(ret.lateralTuning, 3.0, 0.01)
+        torque_tune(ret.lateralTuning, 3.5, 0.01)
 
     elif candidate == CAR.GENESIS_EQ900_L:
       ret.mass = 2290
