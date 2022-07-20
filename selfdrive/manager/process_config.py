@@ -13,6 +13,9 @@ def driverview(started: bool, params: Params, CP: car.CarParams) -> bool:
 def notcar(started: bool, params: Params, CP: car.CarParams) -> bool:
   return CP.notCar  # type: ignore
 
+def logging(started, params, CP: car.CarParams) -> bool:
+  run = (not CP.notCar) or not params.get_bool("DisableLogging")
+  return started and run
 
 procs = [
   # due to qualcomm kernel bugs SIGKILLing camerad sometimes causes page table corruption
