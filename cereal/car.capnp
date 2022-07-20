@@ -153,9 +153,11 @@ struct CarState {
   canTimeout @40 :Bool;     # CAN bus dropped out
 
   # car speed
-  vEgo @1 :Float32;         # best estimate of speed
-  aEgo @16 :Float32;        # best estimate of acceleration
-  vEgoRaw @17 :Float32;     # unfiltered speed from CAN sensors
+  vEgo @1 :Float32;          # best estimate of speed
+  aEgo @16 :Float32;         # best estimate of acceleration
+  vEgoRaw @17 :Float32;      # unfiltered speed from CAN sensors
+  vEgoCluster @44 :Float32;  # best estimate of speed shown on car's instrument cluster, used for UI
+
   yawRate @22 :Float32;     # best estimate of yaw rate
   standstill @18 :Bool;
   wheelSpeeds @2 :WheelSpeeds;
@@ -215,12 +217,12 @@ struct CarState {
   charging @43 :Bool;
 
 
-  cluSpeedMs @44 :Float32;
-  cruiseGap @45 : Int32;
-  autoHold @46 : Int32;
-  tpms @47 : Tpms;
-  vCluRatio @48 :Float32;
-  aBasis @49 :Float32;
+  cluSpeedMs @45 :Float32;
+  cruiseGap @46 : Int32;
+  autoHold @47 : Int32;
+  tpms @48 : Tpms;
+  vCluRatio @49 :Float32;
+  aBasis @50 :Float32;
 
   struct Tpms {
     fl @0 :Float32;
@@ -230,8 +232,8 @@ struct CarState {
   }
 
   # Gear Current By Tenesi
-  currentGear @50 :Float32;
-  engRpm @51 :Float32;
+  currentGear @51 :Float32;
+  engRpm @52 :Float32;
 
   struct WheelSpeeds {
     # optional wheel speeds
@@ -244,11 +246,12 @@ struct CarState {
   struct CruiseState {
     enabled @0 :Bool;
     speed @1 :Float32;
+    speedCluster @6 :Float32;  # Set speed as shown on instrument cluster
     available @2 :Bool;
     speedOffset @3 :Float32;
     standstill @4 :Bool;
     nonAdaptive @5 :Bool;
-    enabledAcc @6 :Bool;
+    enabledAcc @7 :Bool;
   }
 
   enum GearShifter {
