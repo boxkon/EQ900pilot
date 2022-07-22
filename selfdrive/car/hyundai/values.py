@@ -66,7 +66,7 @@ class CAR:
   K5_2021 = "KIA K5 2021"
   K5_HEV = "KIA K5 HYBRID 2017 & SPORTS 2019"
   K5_HEV_2022 = "KIA K5 HYBRID 2022"
-  SPORTAGE = "KIA SPORTAGE S 2020"  
+  SPORTAGE = "KIA SPORTAGE S 2020"
   SORENTO = "KIA SORENTO GT LINE 2018"
   STINGER = "KIA STINGER GT2 2018"
   NIRO_EV = "KIA NIRO EV 2020 PLATINUM"
@@ -103,13 +103,7 @@ FINGERPRINTS = {
   }],
   CAR.GENESIS_G70: [{}],
   CAR.GENESIS_G80: [{}],
-  CAR.GENESIS_EQ900: [{
-    67: 8, 68: 8, 127: 8, 304: 8, 320: 8, 339: 8, 356: 4, 358: 6, 359: 8, 544: 8, 593: 8, 608: 8, 682: 4,  688: 5, 809: 8, 854: 7, 870: 7, 871: 8, 872: 8, 897: 8, 902: 8, 903: 8, 916: 8, 1040: 8, 1056: 8, 1057: 8, 1078: 4, 1107: 5, 1136: 8, 1151: 6, 1162: 4, 1168: 7, 1170: 8, 1173: 8, 1184: 8, 1265: 4, 1280: 1, 1281: 3, 1287: 4, 1290: 8, 1292: 8, 1294: 8, 1312: 8, 1322: 8, 1345: 8, 1348: 8, 1363: 8, 1369: 8, 1370: 8, 1371: 8, 1378: 4, 1384: 8, 1407: 8, 1419: 8, 1425: 2, 1427: 6, 1434: 2, 1456: 4, 1470: 8, 1988: 8, 2000: 8, 2003: 8, 2004: 8, 2005: 8, 2008: 8, 2011: 8, 2012: 8, 2013: 8
-  },{
-    67: 8, 68: 8, 127: 8, 304: 8, 320: 8, 339: 8, 356: 4, 358: 6, 544: 8, 545: 8, 546: 8, 548: 8, 549: 8, 550: 8, 593: 8, 608: 8, 682: 4, 688: 5, 809: 8, 832: 8, 854: 7, 870: 7, 871: 8, 872: 8, 897: 8, 902: 8, 903: 8, 916: 8, 1040: 8, 1056: 8, 1057: 8, 1064: 8, 1078: 4, 1107: 5, 1136: 8, 1151: 6, 1156: 8, 1157: 4, 1162: 4, 1168: 7, 1170: 8, 1173: 8, 1184: 8, 1265: 4, 1280: 1, 1287: 4, 1290: 8, 1292: 8, 1294: 8, 1312: 8, 1322: 8, 1342: 6, 1345: 8, 1348: 8, 1363: 8, 1369: 8, 1370: 8, 1371: 8, 1378: 4, 1384: 8, 1407: 8, 1419: 8, 1425: 2, 1427: 6, 1434: 2, 1456: 4, 1470: 8
-  }, {
-    67: 8, 68: 8, 127: 8, 304: 8, 320: 8, 339: 8, 356: 4, 358: 6, 544: 8, 545: 8, 546: 8, 547: 8, 548: 8, 549: 8, 550: 8, 593: 8, 608: 8, 682: 4, 688: 5, 809: 8, 832: 8, 854: 7, 870: 7, 871: 8, 872: 8, 897: 8, 902: 8, 903: 8, 916: 8, 1040: 8, 1056: 8, 1057: 8, 1064: 8, 1078: 4, 1107: 5, 1136: 8, 1151: 6, 1156: 8, 1157: 4, 1162: 4, 1168: 7, 1170: 8, 1173: 8, 1184: 8, 1265: 4, 1280: 1, 1287: 4, 1290: 8, 1292: 8, 1294: 8, 1312: 8, 1322: 8, 1342: 6, 1345: 8, 1348: 8, 1363: 8, 1369: 8, 1370: 8, 1371: 8, 1378: 4, 1384: 8, 1407: 8, 1419: 8, 1425: 2, 1427: 6, 1434: 2, 1456: 4, 1470: 8
-  }],
+  CAR.GENESIS_EQ900: [{}],
   CAR.GENESIS_EQ900_L: [{
     67: 8, 68: 8, 127: 8, 304: 8, 320: 8, 339: 8, 356: 4, 358: 6, 359: 8, 544: 8, 593: 8, 608: 8, 688: 5, 809: 8, 832: 8, 854: 7, 870: 7, 871: 8, 872: 8, 897: 8, 902: 8, 903: 8, 916: 8, 1040: 8, 1056: 8, 1057: 8, 1064: 8, 1078: 4, 1107: 5, 1136: 8, 1151: 6, 1156: 8, 1157: 4, 1162: 4, 1168: 7, 1170: 8, 1173: 8, 1184: 8, 1265: 4, 1280: 1, 1281: 3, 1287: 4, 1290: 8, 1292: 8, 1294: 8, 1312: 8, 1322: 8, 1342: 6, 1345: 8, 1348: 8, 1363: 8, 1369: 8, 1370: 8, 1371: 8, 1378: 4, 1384: 8, 1407: 8, 1419: 8, 1425: 2, 1427: 6, 1434: 2, 1456: 4, 1470: 8
   }],
@@ -180,6 +174,12 @@ FINGERPRINTS = {
 }
 
 FW_VERSIONS = {
+  CAR.GENESIS_EQ900: {
+    (Ecu.transmission, 0x7e1, None): [b'\xf1\x87VDGMD15866192DD3x\x88x\x89wuFvvfUf\x88vWwgwwwvfVgx\x87o\xff\xbc^\xf1\x81E14\x00\x00\x00\x00\x00\x00\x00\xf1\x00bcshcm49  E14\x00\x00\x00\x00\x00\x00\x00SHI0G50NB1tc5\xb7'],
+    (Ecu.fwdRadar, 0x7d0, None): [b'\xf1\x00HI__ SCC F-CUP      1.00 1.01 96400-D2100         '],
+    (Ecu.fwdCamera, 0x7c4, None): [b'\xf1\x00HI  LKAS AT USA LHD 1.00 1.00 95895-D2020 160302'],
+    (Ecu.engine, 0x7e0, None): [b'\xf1\x810000000000\x00'],
+  },
   CAR.EV6: {
     (Ecu.esp, 0x7d1, None): [
       b'\xf1\x8758520CV100\xf1\x00CV  IEB \x02 101!\x10\x18 58520-CV100',
@@ -247,7 +247,7 @@ HDA2_CAR = {CAR.EV6, }
 DBC = {
   # genesis
   CAR.GENESIS: dbc_dict('hyundai_kia_generic', None),
-  CAR.GENESIS_G70: dbc_dict('hyundai_kia_generic', None),  
+  CAR.GENESIS_G70: dbc_dict('hyundai_kia_generic', None),
   CAR.GENESIS_G80: dbc_dict('hyundai_kia_generic', None),
   CAR.GENESIS_EQ900: dbc_dict('hyundai_kia_generic', None),
   CAR.GENESIS_EQ900_L: dbc_dict('hyundai_kia_generic', None),
@@ -286,9 +286,9 @@ DBC = {
   CAR.K5_2021: dbc_dict('hyundai_kia_generic', None),
   CAR.K5_HEV: dbc_dict('hyundai_kia_generic', None),
   CAR.K5_HEV_2022: dbc_dict('hyundai_kia_generic', None),
-  CAR.SPORTAGE: dbc_dict('hyundai_kia_generic', None),  
+  CAR.SPORTAGE: dbc_dict('hyundai_kia_generic', None),
   CAR.SORENTO: dbc_dict('hyundai_kia_generic', None),
-  CAR.STINGER: dbc_dict('hyundai_kia_generic', None),  
+  CAR.STINGER: dbc_dict('hyundai_kia_generic', None),
   CAR.NIRO_EV: dbc_dict('hyundai_kia_generic', None),
   CAR.NIRO_HEV: dbc_dict('hyundai_kia_generic', None),
   CAR.NIRO_HEV_2021: dbc_dict('hyundai_kia_generic', None),
